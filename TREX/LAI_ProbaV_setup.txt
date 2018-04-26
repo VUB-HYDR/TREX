@@ -1,0 +1,59 @@
+===================================================
+	I.	SCRIPT SETTINGS
+===================================================
+
+= = = INPUT DATA = = = = = = = = = = = = = = = =
+[1]	Reference raster	biebrza_30_utm.tif
+[2]	Extraction points	points.shp
+[3]	Cloud fraction		0.5
+[4]	Wipe out memory		1
+
+= = = PRIMARY OUTPUT = = = = = = = = = = = = = = = 
+[5]	NDVI.tif maps		1
+[6]	LAI.tif maps		1
+[7]	LAI.asc maps		1
+[8]	Monthly LAI.tif maps	1
+[9]	Monthly LAI.asc maps	1
+[10]	WETSPA format		0
+
+= = = SECONDARY OUTPUT = = = = = = = = = = = = = =
+[11]	LAI.jpg			1
+[12]	monthly LAI.jpg		1
+[13]	LAI timeseries.csv	1
+[14]    LAI timeseries.jpg	0
+
+
+===================================================
+	II.	DESCRIPTION
+===================================================
+
+This file defines settings nessesary to run the core script of "Tools for Raster data EXploration". The first section cointains a table with three columns:
+"#" (number of item), "name" (name of the element) and "value" (defined by user). The last column can be edited by the User. Valid values are:
+
+[1] Value type: string. EXAMPLE: "name.tif"
+Specify a name of a reference raster located in "...\\reference_maps"
+WARNING: Specifying a reference raster is MANDATORY to run the script.
+
+[2] Value type: string. EXAMPLE: "points.shp"
+Specify a name of a vector map containing extration points located in "...\\reference_maps"
+
+[3] Value type: float. Value range from 0.0 to 1.0
+Algorithm will discard any image that has more than certain % of invalid pixels (clouds, shadows, disturbed signal etc)
+0.05 = maximum 5% of all pixels is invalid (clear sky)
+0.95 = maximum 95% of all pixels is invalid (clouded)
+
+[4 - 10] Value type: binary. Set 1 for yes (true) and 0 for no (false).
+
+[4] Step 1: Clear directories?             	Yes(1) or No(0)
+[5] Step 2: Generate NDVI.tif maps?        	Yes(1) or No(0)
+[6] Step 3: Generate LAI.tif maps?         	Yes(1) or No(0)
+[7] Step 4: Generate LAI.asc maps?         	Yes(1) or No(0)
+[8] Step 5: Generate monthly LAI.tif maps? 	Yes(1) or No(0)
+[9] Step 6: Generate monthly LAI.asc maps? 	Yes(1) or No(0)
+[10] Step 7: Generate WETSPA input?        	Yes(1) or No(0)
+[11] Step 8: Generate LAI.jpg?        		Yes(1) or No(0)
+[12] Step 9: Generate monthly LAI.jpg?        	Yes(1) or No(0)
+[13] Step 10: Generate WETSPA input?        	Yes(1) or No(0)
+[14] Step 11: Generate WETSPA input?        	Yes(1) or No(0)
+
+
