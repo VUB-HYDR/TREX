@@ -43,7 +43,7 @@ More recent versions of listed packages should be still compatible.
 # 3. Tool's structure
 ---
 Tool's folder has a fixed structure that has to be respected and never modified, unless those changes are fully intended. Tool consists of three scripts written in Python 2.7, setup text file, folder with temporal data and folders containing input or output data. Scripts do not interact with each other but saves and reads data from different folders. User through "LAI_ProbaV_setup.txt" file can specify which of type input or output scripts will read and process. Each script should be run seperetely using [Spyder](https://pythonhosted.org/spyder/) Python environment. 
-![ Graph.1 Structure ](.graphs/structure.JPG)
+![ Graph.1 Structure ](./graphs/structure.JPG)
 ### Input data
 There are three types of input data for the tool:
 * **Reference raster**
@@ -109,7 +109,7 @@ Each variable got a seperate number to help with quick identification.
 Scripts do not interact directly with each other but are using results generated with different steps. Generating .jpg files require certain images be first processed into .asc format. All dependencies between Primary Outputs (red color) and Secondary Outputs (green color) have been shown below.
 WARNING: Specifying a [1] reference raster and a [3] cloud fraction is MANDATORY before running the script. Shapefile with extraction points is optional depending wheter the User wants to generate timeseries or not.
 
-![ Graph.2 Module dependencies ](.graphs/dependencies.JPG)
+![ Graph.2 Module dependencies ](./graphs/dependencies.JPG)
 
 
 ### Value type
