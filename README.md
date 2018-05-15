@@ -162,5 +162,5 @@ This function deletes all files in all subfolders of folder *main*. After modyfi
 Version 0.1.0 - April 2018  
 
 ## License
-This project is licensed under the MIT License. See also the [LICENSE](./LICENSE.md) file.
+See also the [LICENSE](./LICENSE.md) file.
 
