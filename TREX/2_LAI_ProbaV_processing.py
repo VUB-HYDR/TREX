@@ -1,5 +1,5 @@
 #           ProbaV - LAI processing tool
-#                 (25/04/2018)
+#                 (11/05/2018)
 #-------------------------------------------------------
 # - - - MODULES AND WORKING DIRECTORIES - - - - - - - - -
 #-------------------------------------------------------
@@ -122,17 +122,24 @@ def PixelsQuality(NDVI,SM,output_folder,filename,f_invalid_px):
 # 0111 1111 = 254 inland, cloud
 # 0011 1111 = 252 inland, shadow
 
+    REF_source = gdal.Open(dir_input_raster)
+    band_info_REF = REF_source.GetRasterBand(1)
+    nodata= band_info_REF.GetNoDataValue()    
+    
     NDVI_source = gdal.Open(NDVI)
     band_info_NDVI= NDVI_source.GetRasterBand(1)
     xSize = band_info_NDVI.XSize
     ySize = band_info_NDVI.YSize
-    nodata= band_info_NDVI.GetNoDataValue()
     geoTrans = NDVI_source.GetGeoTransform()
     wktProjection = NDVI_source.GetProjection() 
-    band_Array_NDVI = np.array(gdal.Band.ReadAsArray(band_info_NDVI))
+    band_Array_NDVI = gdal.Band.ReadAsArray(band_info_NDVI)
+    band_Array_NDVI = np.array (band_Array_NDVI, np.int32)
+ 
     SM_source = gdal.Open(SM)
     band_info_SM = SM_source.GetRasterBand(1)  
-    band_Array_SM = np.array (gdal.Band.ReadAsArray(band_info_SM))
+    band_Array_SM = gdal.Band.ReadAsArray(band_info_SM)
+    band_Array_SM = np.array (band_Array_SM, np.int32)
+    
     SM_invalid_pixels = zip(*np.where ((band_Array_SM != 248) & (band_Array_SM != 232) & (band_Array_SM != 120) & (band_Array_SM != 104)))
 #    SM_invalid_pixels = zip(*np.where (band_Array_SM != 248))
     counter = 0
@@ -141,14 +148,12 @@ def PixelsQuality(NDVI,SM,output_folder,filename,f_invalid_px):
     for i in SM_invalid_pixels:
         band_Array_NDVI[i]=nodata
         counter += 1
-#Test for clouds   
+#Test for clouds       
     if counter > pixels*f_invalid_px:
-        pass
-    else:  
+        pass   
+    else:        
         os.chdir (output_folder)
-#        new_filename = "Valid_NDVI_100m_" + filename + ".tif"
         driver = gdal.GetDriverByName('GTiff')
-#        dataset = driver.Create(new_filename,xSize, ySize, 1)
         dataset = driver.Create(filename,xSize, ySize, 1, gdal.GDT_Float32)
         dataset.SetGeoTransform(geoTrans)
         dataset.SetProjection(wktProjection)
@@ -194,7 +199,7 @@ def NDVI_correction(image_input,output_folder,filename):
     geoTrans = data_src.GetGeoTransform()
     wktProjection = data_src.GetProjection() 
     band_Array = gdal.Band.ReadAsArray(band_info)
-    band_Array_NDVI_less_than_0_Values= zip(*np.where (band_Array < 0))
+    band_Array_NDVI_less_than_0_Values= zip(*np.where ((band_Array < 0)&(band_Array != nodata)))
     for i in band_Array_NDVI_less_than_0_Values:
         band_Array[i]=0
 #        band_Array[i]=nodata
