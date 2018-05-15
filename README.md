@@ -1,5 +1,5 @@
 
-# Tool for Raster data EXploration
+# Tool for Raster data EXploration <img src="./graphs/header_logo.png" align="right" />
 
 Authors: Joanna Suliga, Joy Bhattacharjee, Boud Verbeiren
 Contact author: Joanna Suliga, joanna.suliga@vub.be
@@ -48,7 +48,7 @@ Tool's folder has a fixed structure that has to be respected and never modified,
 There are three types of input data for the tool:
 * **Reference raster**
 
-This map is a raster .tif that represents the area of interest e.g. a catchment shape. All outputs will be reprojected, resampled and clipped to the exact extend of that raster. This raster should have a name specified in setup file (*LAI_ProbaV_setup.txt*) and be located in the folder *reference_maps*.
+This map is a raster .tif that represents the area of interest e.g. a catchment shape. All outputs will be reprojected, resampled and clipped to the exact extend of that raster. The reference raster must have set a projection and no data. This raster should have a name specified in setup file (*LAI_ProbaV_setup.txt*) and be located in the folder *reference_maps*.
 * **Extraction points**
 
 This map is a shapefile .shp that containts points of interest. Coordinates of those points will be used for deriving timeseries of LAI. This raster should have a name specified in the setup file ( *LAI_ProbaV_setup.txt*); be located in the folder *reference_maps* and has the same projection as the reference raster.
