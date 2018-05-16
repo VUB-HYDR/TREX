@@ -3,10 +3,10 @@
 ===================================================
 
 = = = INPUT DATA = = = = = = = = = = = = = = = =
-[1]	Reference raster	biebrza_30_utm.tif
+[1]	Reference raster	ref_map.tif
 [2]	Extraction points	points.shp
 [3]	Cloud fraction		0.5
-[4]	Wipe out memory		1
+[4]	Wipe out memory		0
 
 = = = PRIMARY OUTPUT = = = = = = = = = = = = = = = 
 [5]	NDVI.tif maps		1
@@ -14,13 +14,14 @@
 [7]	LAI.asc maps		1
 [8]	Monthly LAI.tif maps	1
 [9]	Monthly LAI.asc maps	1
-[10]	WETSPA format		0
+[10]	Monthly int LAI.asc	1
 
 = = = SECONDARY OUTPUT = = = = = = = = = = = = = =
 [11]	LAI.jpg			1
 [12]	monthly LAI.jpg		1
-[13]	LAI timeseries.csv	1
-[14]    LAI timeseries.jpg	0
+[13]	interpolated LAI.jpg	1
+[14]	LAI timeseries.csv	1
+[15]    LAI timeseries.jpg	0
 
 
 ===================================================
@@ -50,10 +51,11 @@ Algorithm will discard any image that has more than certain % of invalid pixels 
 [7] Step 4: Generate LAI.asc maps?         	Yes(1) or No(0)
 [8] Step 5: Generate monthly LAI.tif maps? 	Yes(1) or No(0)
 [9] Step 6: Generate monthly LAI.asc maps? 	Yes(1) or No(0)
-[10] Step 7: Generate WETSPA input?        	Yes(1) or No(0)
+[10] Step 7: Generate monthly int LAI.asc maps? Yes(1) or No(0)
 [11] Step 8: Generate LAI.jpg?        		Yes(1) or No(0)
 [12] Step 9: Generate monthly LAI.jpg?        	Yes(1) or No(0)
-[13] Step 10: Generate WETSPA input?        	Yes(1) or No(0)
-[14] Step 11: Generate WETSPA input?        	Yes(1) or No(0)
+[13] Step 10: Generate int monthly LAI.jpg?     Yes(1) or No(0)
+[14] Step 11: Generate LAI timeseries?        	Yes(1) or No(0)
+[15] Step 12: Plot LAI timeseries?        	Yes(1) or No(0)
 
 

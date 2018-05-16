@@ -1,13 +1,7 @@
-#           ProbaV - LAI processing tool
-#                   (25/04/2018)
-#            @Joanna Suliga Nov 2017
-#                    after
-#            @Joy Bhattacharjee Jun 2017
-#                    after
-#            @Joanna Suliga Dec 2016
-#
+#           ProbaV - LAI visualization tool
+#                 (16/05/2018)
 #-------------------------------------------------------
-# - - - MODULES AND WORKING DIRECTORY - - - - - - - - -
+# - - - MODULES AND WORKING DIRECTORIES - - - - - - - - -
 #-------------------------------------------------------
 
 import os,os.path
@@ -55,13 +49,16 @@ step8 = read_setup.readline().split()
 step8 = int(step8[-1])    
 # read line #21 monthly LAI.jpg
 step9 = read_setup.readline().split()
-step9 = int(step9[-1])     
-# read line #22 LAI timeseries.csv
+step9 = int(step9[-1])
+# read line #22 int monthly LAI.jpg
 step10 = read_setup.readline().split()
 step10 = int(step10[-1]) 
-# read line #23 LAI timeseries.jpg
+# read line #23 LAI timeseries.csv
 step11 = read_setup.readline().split()
 step11 = int(step11[-1]) 
+# read line #24 LAI timeseries.jpg
+step12 = read_setup.readline().split()
+step12 = int(step12[-1]) 
 
 
 dir_step2 = current_dir + "\\main\\1_NDVI_tif"
@@ -72,7 +69,8 @@ dir_step6 = current_dir + "\\main\\5_monthly_LAI_asc"
 dir_step7 = current_dir + "\\main\\6_inter_LAI_asc"
 dir_step8 = current_dir + "\\main\\7_LAI_jpg"
 dir_step9 = current_dir + "\\main\\8_monthly_LAI_jpg"
-dir_step10 = current_dir + "\\main\\9_LAI_timeseries"
+dir_step10 = current_dir + "\\main\\9_interpolated_LAI_jpg"
+dir_step11 = current_dir + "\\main\\10_LAI_timeseries"
 temp = current_dir + "\main\\temp"
 
 #-------------------------------------------------------
@@ -108,7 +106,7 @@ def create_header(from_asc):
     createHeader = 'NCOLS ' + str(ncols) + "\n" + 'NROWS ' + str(nrows) + "\n" + 'XLLCORNER ' + str(xll) + "\n" + 'YLLCORNER ' + str(yll) + "\n" + 'CELLSIZE ' + str(cellsize) + "\n" + 'NODATA_VALUE ' + str(nodata)
     return createHeader, ncols, nrows, nodata
 
-def readMap(fileName, ncols, nrows):
+def readMap(fileName, ncols, nrows, nodata):
 #creates a numpy array from the certain file (fileName) with given size (nrows, ncols)
     f = open(fileName,'r')
     for i in range(6):
@@ -122,7 +120,7 @@ def readMap(fileName, ncols, nrows):
 # in case there is a random processing error '-1.#IND' in GDAL...
         try:
             for items in range(len(a)):
-                a[a.index('-1.#IND')] = 255
+                a[a.index('-1.#IND')] = nodata
 #            a[a.index(string, beg = 0, end = len(a))] = 255
 #            print a
         except:
@@ -153,7 +151,7 @@ if step8 == 1:
         os.chdir(dir_step4)        
         file_with_header = dir_step4 + "\\" + j
         get_header = create_header(file_with_header)
-        lai_map = readMap(j, get_header[1], get_header[2])        
+        lai_map = readMap(j, get_header[1], get_header[2], get_header[3])        
         plt.clf()
         plotResult_1 = lai_map
         mask_noData = np.where(plotResult_1 != get_header[3], False, True)
@@ -197,7 +195,7 @@ if step9 == 1:
         
         file_with_header = dir_step6 + "\\" + j
         get_header = create_header(file_with_header)
-        lai_map = readMap(j, get_header[1], get_header[2])
+        lai_map = readMap(j, get_header[1], get_header[2], get_header[3])
         k = j[:-4]
         plt.clf()
         plotResult_1 = lai_map
@@ -220,19 +218,62 @@ if step9 == 1:
         plt.savefig(j[:-4] + '.jpeg' , transparent=True, dpi=200)
         plt.close()
 
-else:
-    pass
-
 #---------------------------------------------
 # - - - STEP 10 - - - STEP 10 - - - STEP 10 - 
 #---------------------------------------------
 if step10 == 1:
 #    print '\n Step 10'
+    print '\nGenerating interpolated monthly LAI.jpg maps...'
+    Myfiles10 = SearchFolder(dir_step7, '.asc')  
+    filenames = []
+    for i in range (len(Myfiles10)):
+        breakList = Myfiles10[i].split("\\")
+        fn = breakList [-1]
+        fn = fn[:-4]
+        filenames.append(fn)
+    
+    for j in Myfiles10:
+#        print 'Reading ' + j + '...'
+        os.chdir(dir_step7)
+        
+        file_with_header = dir_step7 + "\\" + j
+        get_header = create_header(file_with_header)
+        lai_map = readMap(j, get_header[1], get_header[2], get_header[3])
+        k = j[:-4]
+        plt.clf()
+        plotResult_1 = lai_map
+        mask_noData = np.where(plotResult_1 != get_header[3], False, True)
+        masked = ma.array(plotResult_1, mask = mask_noData)
+        plt.clf()
+        #figcize, pixel size ratio, just for visualization
+        ay, ax = plt.subplots(figsize=(5, 5)); ax.set_title(k)
+        #cmap color (Greens, YlGn, BuGn, summer, winter), interpolation 'none' = pixelated, aspect auto allows streching (equal changes pixels to squares)
+#        ax.plot(x_coord[0] + 0.5, y_coord[0] + 0.5, 'rD', markersize=3)
+        
+#        plt.imshow(masked, extent=[0, get_header[1], get_header[2], 0],
+#                   vmin=0, vmax=max_value, cmap="jet", interpolation="none", aspect='equal' )
+        plt.imshow(masked, vmin=0, vmax=max_value, cmap="jet", interpolation="none", aspect='equal' )
+        cbar = plt.colorbar(orientation='vertical')
+        cbar.set_label('LAI [-] monthly agg')
+#        plt.xlabel('Number of columns')
+#        plt.ylabel('Number of rows')
+        os.chdir(dir_step10)  
+        plt.savefig(j[:-4] + '.jpeg' , transparent=True, dpi=200)
+        plt.close()
+
+else:
+    pass
+
+#---------------------------------------------
+# - - - STEP 11 - - - STEP 11 - - - STEP 11 - 
+#---------------------------------------------
+if step11 == 1:
+#    print '\n Step 11'
     print '\nSaving LAI timeseries as .csv'
     
     os.chdir(dir_step3)
-    Myfiles10 = SearchFolder(dir_step3, '.tif')
-    filenames10 = []
+    Myfiles111 = SearchFolder(dir_step3, '.tif')
+    filenames111 = []
     years = []
     LAI_Values = []
     Point_x=[]
@@ -240,18 +281,18 @@ if step10 == 1:
     Cord_px=[]
     Cord_py=[]
     
-    for i in range (len(Myfiles10)):
-        breakList = Myfiles10 [i].split("\\")
+    for i in range (len(Myfiles111)):
+        breakList = Myfiles111 [i].split("\\")
         fn_01 = breakList [-1].split(".")
         fn = fn_01 [0].split("_")[-1]
         year = fn[:4]
         if year not in years: years.append(year)
         fn = int(fn)
-        filenames10.append(fn)  
+        filenames11.append(fn)  
 
-    for i in range (len(Myfiles10)):
+    for i in range (len(Myfiles111)):
         # reading raster info and conveeting pixel coordinates
-        source_raster = gdal.Open(Myfiles10[i]) 
+        source_raster = gdal.Open(Myfiles111[i]) 
         geotrans = source_raster.GetGeoTransform()
         band = source_raster.GetRasterBand(1)
         # reading shapefile info 
@@ -281,18 +322,18 @@ if step10 == 1:
             intval=band.ReadAsArray(px,py,1,1)
             LAI_Values.append(intval.item(0))     
     
-    os.chdir (dir_step10)
-    dates = np.array(filenames10)
-    dates = np.reshape(dates, (len(Myfiles10), 1))
+    os.chdir (dir_step11)
+    dates = np.array(filenames111)
+    dates = np.reshape(dates, (len(Myfiles111), 1))
     LAI_matrix = np.array(LAI_Values)
-    LAI_matrix = np.reshape(LAI_matrix, (len(Myfiles10), len(points_name)-1))
+    LAI_matrix = np.reshape(LAI_matrix, (len(Myfiles111), len(points_name)-1))
     matrix = np.append(dates, LAI_matrix, axis=1)
     np.savetxt('LAI_timeseries.csv', matrix , delimiter="," , fmt='%10.2f', header = header, comments='' )
 
-    print '\nSaving LAI timeseries as .csv'
+    print '\nSaving monthly LAI timeseries as .csv'
     os.chdir(dir_step5)
-    Myfiles11 = SearchFolder(dir_step5, '.tif')
-    filenames11 = []
+    Myfiles112 = SearchFolder(dir_step5, '.tif')
+    filenames112 = []
     years = []
     LAI_Values = []
     Point_x=[]
@@ -300,18 +341,18 @@ if step10 == 1:
     Cord_px=[]
     Cord_py=[]
         
-    for i in range (len(Myfiles11)):
-        breakList = Myfiles11 [i].split("\\")
+    for i in range (len(Myfiles112)):
+        breakList = Myfiles112 [i].split("\\")
         fn_01 = breakList [-1].split(".")
         fn = fn_01 [0].split("_")[-1]
         year = fn[:4]
         if year not in years: years.append(year)
         fn = int(fn)
-        filenames11.append(fn)  
+        filenames112.append(fn)  
     
-    for i in range (len(Myfiles11)):
+    for i in range (len(Myfiles112)):
         # reading raster info and conveeting pixel coordinates
-        source_raster = gdal.Open(Myfiles11[i]) 
+        source_raster = gdal.Open(Myfiles112[i]) 
         geotrans = source_raster.GetGeoTransform()
         band = source_raster.GetRasterBand(1)
         # reading shapefile info 
@@ -340,12 +381,72 @@ if step10 == 1:
             
             intval=band.ReadAsArray(px,py,1,1)
             LAI_Values.append(intval.item(0))     
-    os.chdir (dir_step10)
-    dates = np.array(filenames11)
-    dates = np.reshape(dates, (len(Myfiles11), 1))
+    os.chdir (dir_step11)
+    dates = np.array(filenames112)
+    dates = np.reshape(dates, (len(Myfiles112), 1))
     LAI_matrix = np.array(LAI_Values)
-    LAI_matrix = np.reshape(LAI_matrix, (len(Myfiles11), len(points_name)-1))
+    LAI_matrix = np.reshape(LAI_matrix, (len(Myfiles112), len(points_name)-1))
     matrix = np.append(dates, LAI_matrix, axis=1)
     np.savetxt('monthly_LAI_timeseries.csv', matrix , delimiter="," , fmt='%10.2f', header = header, comments='' )
 
-print 'Done!'
+#print '\nSaving interpolated monthly LAI timeseries as .csv'
+#    os.chdir(dir_step5)
+#    Myfiles113 = SearchFolder(dir_step6, '.tif')
+#    filenames113 = []
+#    years = []
+#    LAI_Values = []
+#    Point_x=[]
+#    Point_y=[]
+#    Cord_px=[]
+#    Cord_py=[]
+#        
+#    for i in range (len(Myfiles113)):
+#        breakList = Myfiles113 [i].split("\\")
+#        fn_01 = breakList [-1].split(".")
+#        fn = fn_01 [0].split("_")[-1]
+#        year = fn[:4]
+#        if year not in years: years.append(year)
+#        fn = int(fn)
+#        filenames113.append(fn)  
+#    
+#    for i in range (len(Myfiles113)):
+#        # reading raster info and conveeting pixel coordinates
+#        source_raster = gdal.Open(Myfiles113[i]) 
+#        geotrans = source_raster.GetGeoTransform()
+#        band = source_raster.GetRasterBand(1)
+#        # reading shapefile info 
+#        ds=ogr.Open(dir_vector_map)
+#        lyr=ds.GetLayer()
+#        
+#        points_name = ['date']
+#        for feature in lyr:
+#            a = feature.GetField('ID')
+#            points_name.append(a)
+#        lyr.ResetReading()
+#        header = ",".join(str(x) for x in points_name)
+#       
+#        for feat in lyr:
+#            geom = feat.GetGeometryRef()
+#            mx,my=geom.GetX(), geom.GetY()  #coord in map units
+#            Point_x.append(mx)
+#            Point_y.append(my)
+#            #Convert from map to pixel coordinates.
+#            #Only works for geotransforms with no rotation.
+#            px = (mx - geotrans[0]) / geotrans[1] #x pixel
+#            py = (my - geotrans[3]) / geotrans[5] #y pixel
+#            
+#            Cord_px.append(px)
+#            Cord_py.append(py)
+#            
+#            intval=band.ReadAsArray(px,py,1,1)
+#            LAI_Values.append(intval.item(0))     
+#    os.chdir (dir_step11)
+#    dates = np.array(filenames113)
+#    dates = np.reshape(dates, (len(Myfiles113), 1))
+#    LAI_matrix = np.array(LAI_Values)
+#    LAI_matrix = np.reshape(LAI_matrix, (len(Myfiles113), len(points_name)-1))
+#    matrix = np.append(dates, LAI_matrix, axis=1)
+#    np.savetxt('int_monthly_LAI_timeseries.csv', matrix , delimiter="," , fmt='%10.2f', header = header, comments='' )
+
+
+print 'Complete!'

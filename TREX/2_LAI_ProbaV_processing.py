@@ -1,5 +1,5 @@
 #           ProbaV - LAI processing tool
-#                 (11/05/2018)
+#                 (16/05/2018)
 #-------------------------------------------------------
 # - - - MODULES AND WORKING DIRECTORIES - - - - - - - - -
 #-------------------------------------------------------
@@ -8,6 +8,7 @@ import os
 import gdal
 import pandas as pd
 import numpy as np
+from scipy.interpolate import interp1d
 from IPython import get_ipython
 import shutil
 
@@ -336,11 +337,51 @@ def LAI_Map_Agg(in_raster,output_folder,filename, month, year, xarray, yarray):
         oBand.WriteArray(save_LAI_maps_unmasked)
         del dataset
 
-def LAI_interpolation(input_pre, input_x,input_nxt, output_folder,filename):
-    pass
+def readMap(fileName, ncols, nrows, nodata):
+#creates a numpy array from the certain file (fileName) with given size (nrows, ncols)
+    f = open(fileName,'r')
+    for i in range(6):
+        f.readline() 
+    temp = []
+    for i in range(nrows):        
+        temp.append(f.readline().split())
 
-def filler(file):
-    pass
+    for lines in range(len(temp)):
+        a = temp[lines]
+# in case there is a random processing error '-1.#IND' in GDAL...
+        try:
+            for items in range(len(a)):
+                a[a.index('-1.#IND')] = nodata
+#            a[a.index(string, beg = 0, end = len(a))] = 255
+#            print a
+        except:
+            pass    
+    result = np.array(temp,float).reshape(nrows, ncols)
+    f.close()
+    return result
+
+def create_header(from_asc):
+#extracts header info (number of columns & rows, coordinates of XLL & YLL
+#corners, cell size [m] and value of no data) from a given file (path)
+    f = open(from_asc,'r')
+    header = []
+    for i in range(6):
+        header.append(f.readline())
+    ncols = int(header[0].split()[1])
+    nrows = int(header[1].split()[1])
+    xll = float(header[2].split()[1])
+    yll = float(header[3].split()[1])
+    cellsize = float(header[4].split()[1])
+    nodata = float(header[5].split()[1])
+    f.close()    
+    createHeader = 'NCOLS ' + str(ncols) + "\n" + 'NROWS ' + str(nrows) + "\n" + 'XLLCORNER ' + str(xll) + "\n" + 'YLLCORNER ' + str(yll) + "\n" + 'CELLSIZE ' + str(cellsize) + "\n" + 'NODATA_VALUE ' + str(nodata)
+    return createHeader, ncols, nrows, nodata
+
+def set_nodata(array2d, oldValue, newValue):
+    noData_pixels = zip(*np.where(array2d == oldValue))
+    for i in noData_pixels: array2d[i] = newValue
+    return array2d
+
         
 #-------------------------------------------------------
 # - - - MAIN - - - MAIN - - - MAIN - - - MAIN - - -
@@ -596,7 +637,8 @@ if step6 == 1:
         dates.append(fn2)    
     for i in range (len(Myfiles6)):
         in_raster = dir_step5 + "\\" + Myfiles6[i]
-        out_raster = dir_step6+ "\\" + dates[i] + ".asc"
+        out_raster = dir_step6 + "\\" + dates[i] + ".asc"
+        
         if os.path.exists(out_raster):
             os.remove(out_raster)
         cmd= 'gdal_translate -q -of AAIGrid %s %s' % (in_raster, out_raster)
@@ -608,11 +650,66 @@ else:
 #--------------------------------------------- 
 if step7 == 1:   
 #    print '\n Step 7'
-    print '\nInterpolating and generating additonal monthly LAI.asc maps...'
-    print 'WIP - work in progress'
-else:
-    pass
+    print '\nInterpolating between monthly LAI.asc maps...'
+
+    Myfiles7=SearchFolder(dir_step6, '.asc')    
+    filenames = []
+    dates = []
+    
+    for i in range (len(Myfiles7)):
+        breakList = Myfiles7[i].split("\\")
+        fn = breakList [-1]
+        fn = fn[:-4]
+        filenames.append(fn)
+        fn2 = fn.split("_")
+        fn2 = fn2[-1]
+        dates.append(fn2) 
+        
+    for j in range (len(Myfiles7)):
+        os.chdir(dir_step6)
+        in_raster = dir_step6 + "\\" + Myfiles7[j]
+        get_header = create_header(in_raster)
+        nodata = get_header[3]
+        raster_n = readMap(Myfiles7[j], get_header[1], get_header[2], get_header[3])        
+        #check if raster_n has nodata
+        noData_pixels = zip(*np.where(raster_n == nodata))        
+        if len(noData_pixels) == 0:
+            os.chdir(dir_step7)
+            np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.6f', header=get_header[0], comments='')
+        else:
+            print '\nInterpolating ' + str(len(noData_pixels)) + ' values of ' + str(Myfiles7[j])
+            os.chdir(dir_step6)
+            raster_n_minus1 = readMap(Myfiles7[j-1], get_header[1], get_header[2], get_header[3])
+            raster_n_minus2 = readMap(Myfiles7[j-2], get_header[1], get_header[2], get_header[3])
+            raster_n_plus1 = readMap(Myfiles7[j+1], get_header[1], get_header[2], get_header[3])
+            raster_n_plus2 = readMap(Myfiles7[j+2], get_header[1], get_header[2], get_header[3])   
+
+            raster_nan = raster_n
+            raster_nan[raster_nan == nodata] = np.nan
+            filler = np.nanmean(raster_nan)
+            # trick will work if nodata is a negative value AND a certain pixel 
+            # has at least one value per 5 months... therefore...
+            raster_n_minus1 = set_nodata(raster_n_minus1, nodata, -9999)
+            raster_n_minus2 = set_nodata(raster_n_minus2, nodata, -9999)
+            raster_n_plus1 = set_nodata(raster_n_plus1, nodata, -9999)            
+            raster_n_plus2 = set_nodata(raster_n_plus2, nodata, -9999) 
+            
+            for k in noData_pixels:
+                if (raster_n_plus1[k] + raster_n_minus1[k])/2 > 0:
+                    raster_n[k] = (raster_n_plus1[k] + raster_n_minus1[k])/2
+                else:
+                    if ((raster_n_plus1[k] == -9999) & (raster_n_plus2[k] != -9999) & (raster_n_minus1[k] != -9999)):
+                        raster_n[k] = (raster_n_plus2[k] + raster_n_minus1[k])/2
+                    elif ((raster_n_plus1[k] != -9999) & (raster_n_minus1[k] == -9999) & (raster_n_minus2[k] != -9999)):
+                        raster_n[k] = (raster_n_plus1[k] + raster_n_minus2[k])/2
+                    elif ((raster_n_plus2[k] != -9999) & (raster_n_minus2[k] != -9999)):
+                        raster_n[k] = (raster_n_plus2[k] + raster_n_minus2[k])/2                        
+                    else:
+                        raster_n[k] = filler
+
+            os.chdir(dir_step7)
+            np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.6f', header=get_header[0], comments='')
 #---------------------------------------------
 
-get_ipython().magic('reset -sf')
+#get_ipython().magic('reset -sf')
 print '\n PROCESSING COMPLETE'
