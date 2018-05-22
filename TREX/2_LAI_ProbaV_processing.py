@@ -485,7 +485,7 @@ if step2 == 1:
         cmd= 'gdalwarp -q -multi -of GTiff -co TILED=YES -s_srs %s -t_srs %s -tr %s %s -r cubic -overwrite %s %s' % (project_5, t_project, newt_xres, newt_yres, in_raster, out_raster)
         os.system (cmd)    
     del data_rast
-    del raster_5
+#    del raster_5
     CopyClearTemp(temp, dir_step2)       
 #---------------------------------------------
     print '\nAdjusting extend...'
@@ -664,51 +664,67 @@ if step7 == 1:
         fn2 = fn.split("_")
         fn2 = fn2[-1]
         dates.append(fn2) 
-        
+
+    reference = gdal.Open(dir_input_raster)
+    band_info = reference.GetRasterBand(1) 
+    reference_nodata = band_info.GetNoDataValue()
+    nodata_mask = gdal.Band.ReadAsArray(band_info)    
+    
     for j in range (len(Myfiles7)):
         os.chdir(dir_step6)
         in_raster = dir_step6 + "\\" + Myfiles7[j]
         get_header = create_header(in_raster)
         nodata = get_header[3]
-        raster_n = readMap(Myfiles7[j], get_header[1], get_header[2], get_header[3])        
+        raster_n = readMap(Myfiles7[j], get_header[1], get_header[2], get_header[3])
+        raster_n[nodata_mask == reference_nodata] = np.nan
         #check if raster_n has nodata
         noData_pixels = zip(*np.where(raster_n == nodata))        
         if len(noData_pixels) == 0:
             os.chdir(dir_step7)
-            np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.6f', header=get_header[0], comments='')
+            raster_n[nodata_mask == reference_nodata] = nodata                       
+            np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.2f', header=get_header[0], comments='')
         else:
             print '\nInterpolating ' + str(len(noData_pixels)) + ' values of ' + str(Myfiles7[j])
             os.chdir(dir_step6)
             raster_n_minus1 = readMap(Myfiles7[j-1], get_header[1], get_header[2], get_header[3])
             raster_n_minus2 = readMap(Myfiles7[j-2], get_header[1], get_header[2], get_header[3])
-            raster_n_plus1 = readMap(Myfiles7[j+1], get_header[1], get_header[2], get_header[3])
-            raster_n_plus2 = readMap(Myfiles7[j+2], get_header[1], get_header[2], get_header[3])   
+            try: raster_n_plus1 = readMap(Myfiles7[j+1], get_header[1], get_header[2], get_header[3])
+            except: pass
+            try: raster_n_plus2 = readMap(Myfiles7[j+2], get_header[1], get_header[2], get_header[3])
+            except: pass
 
             raster_nan = raster_n
             raster_nan[raster_nan == nodata] = np.nan
             filler = np.nanmean(raster_nan)
             # trick will work if nodata is a negative value AND a certain pixel 
             # has at least one value per 5 months... therefore...
+            
             raster_n_minus1 = set_nodata(raster_n_minus1, nodata, -9999)
             raster_n_minus2 = set_nodata(raster_n_minus2, nodata, -9999)
-            raster_n_plus1 = set_nodata(raster_n_plus1, nodata, -9999)            
-            raster_n_plus2 = set_nodata(raster_n_plus2, nodata, -9999) 
+            
+            try: raster_n_plus1 = set_nodata(raster_n_plus1, nodata, -9999)
+            except : pass
+            
+            try: raster_n_plus2 = set_nodata(raster_n_plus2, nodata, -9999)
+            except : pass
             
             for k in noData_pixels:
-                if (raster_n_plus1[k] + raster_n_minus1[k])/2 > 0:
-                    raster_n[k] = (raster_n_plus1[k] + raster_n_minus1[k])/2
-                else:
-                    if ((raster_n_plus1[k] == -9999) & (raster_n_plus2[k] != -9999) & (raster_n_minus1[k] != -9999)):
-                        raster_n[k] = (raster_n_plus2[k] + raster_n_minus1[k])/2
-                    elif ((raster_n_plus1[k] != -9999) & (raster_n_minus1[k] == -9999) & (raster_n_minus2[k] != -9999)):
-                        raster_n[k] = (raster_n_plus1[k] + raster_n_minus2[k])/2
-                    elif ((raster_n_plus2[k] != -9999) & (raster_n_minus2[k] != -9999)):
-                        raster_n[k] = (raster_n_plus2[k] + raster_n_minus2[k])/2                        
+                try:
+                    if (raster_n_plus1[k] + raster_n_minus1[k])/2 > 0:
+                        raster_n[k] = (raster_n_plus1[k] + raster_n_minus1[k])/2
                     else:
-                        raster_n[k] = filler
-
+                        if ((raster_n_plus1[k] == -9999) & (raster_n_plus2[k] != -9999) & (raster_n_minus1[k] != -9999)):
+                            raster_n[k] = (raster_n_plus2[k] + raster_n_minus1[k])/2
+                        elif ((raster_n_plus1[k] != -9999) & (raster_n_minus1[k] == -9999) & (raster_n_minus2[k] != -9999)):
+                            raster_n[k] = (raster_n_plus1[k] + raster_n_minus2[k])/2
+                        elif ((raster_n_plus2[k] != -9999) & (raster_n_minus2[k] != -9999)):
+                            raster_n[k] = (raster_n_plus2[k] + raster_n_minus2[k])/2                        
+                        else:
+                            raster_n[k] = filler
+                except: raster_n[k] = filler
             os.chdir(dir_step7)
-            np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.6f', header=get_header[0], comments='')
+            raster_n[nodata_mask == reference_nodata] = nodata
+            np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.2f', header=get_header[0], comments='')
 #---------------------------------------------
 
 #get_ipython().magic('reset -sf')

@@ -288,7 +288,7 @@ if step11 == 1:
         year = fn[:4]
         if year not in years: years.append(year)
         fn = int(fn)
-        filenames11.append(fn)  
+        filenames111.append(fn)  
 
     for i in range (len(Myfiles111)):
         # reading raster info and conveeting pixel coordinates
