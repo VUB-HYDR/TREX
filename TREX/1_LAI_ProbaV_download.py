@@ -1,54 +1,43 @@
-
-#               (25/04/2018)
-#            @Joanna Suliga Jan 2018
-#                    after
-#            @Joy Bhattacharjee Jun 2017
-#
-
+#           ProbaV - downloading
+#                 (30/05/2018)
 #-------------------------------------------------------
-# - - - MODULES AND WORKING DIRECTORY - - - - - - - - -
+# - - - MODULES AND WORKING DIRECTORIES - - - - - - - - -
 #-------------------------------------------------------
 
-#importing all the modules
 from ftplib import FTP
 import os,os.path
 
-
 directory = os.path.dirname(os.path.realpath(__file__))
 dir_input_maps = directory + "\\probaV_download"
-
-# ftp server default address
 os.chdir(dir_input_maps)
 ftp = FTP('ftp.vito-eodata.be')
 
 #-------------------------------------------------------
 # - - - USER INPUT - - - - - - - - - - - - - - - - - - -
 #-------------------------------------------------------
-# provide username and password
+# For more information regarding downloading images please explore ReadMe file.
+# Script will ask to provide username and password used at www.vito-eodata.be
 username=raw_input("Provide your username: ")
 pswrd=raw_input("Provide your password: ")
 print 'Logging in.'
 ftp.login(username,pswrd)
 
-# provide ftp directory
-vito_download = raw_input('Provide order name given in email from VITO (ex.M0169702) : ')
+# and provide ftp directory.
+vito_download = raw_input('Provide order name given in the email from VITO (mailing@vito.be) for example M0169702) : ')
 
-# taking the list of the directory    
-print 'Changing to ' + vito_download 
+#-------------------------------------------------------
+# - - - DOWNLOADING - - - - - - - - - - - - - - - - - - -
+#-------------------------------------------------------
 ftp.cwd(vito_download )
 ftp.retrlines('LIST')
 print 'Downloading files'
 
-# get filenames within the folder
-filenames = ftp.nlst() # get filenames within the directory
-
-#Creating folder list
+filenames = ftp.nlst()
 folder_list=[]
 for i in filenames:
     all_list=ftp.nlst(i)
     folder_list.append(all_list)
 
-# saving the files in local directory
 for name in folder_list:
     for i in name:
         local_filename = os.path.join(dir_input_maps,i[34:])
@@ -57,4 +46,4 @@ for name in folder_list:
         file.close()
 ftp.quit() 
 
-print "Done!"
+print "Downloading complete."
