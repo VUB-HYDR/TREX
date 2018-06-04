@@ -1,5 +1,5 @@
 #           ProbaV - LAI processing tool
-#                 (28/05/2018)
+#                 (4/06/2018)
 #-------------------------------------------------------
 # - - - MODULES AND WORKING DIRECTORIES - - - - - - - - -
 #-------------------------------------------------------
@@ -32,7 +32,7 @@ dir_input_raster = current_dir + "\\reference_maps\\" + reference_raster[-1]
 read_setup.readline()
 # read line #8 cloud fraction
 cloud_fraction = read_setup.readline().split()
-f_invalid_px_1 = cloud_fraction[-1]
+f_invalid_px_1 = float(cloud_fraction[-1])
 # read line #9 wipe out 
 step1 = read_setup.readline().split()
 step1 = int(step1[-1])
@@ -139,9 +139,9 @@ def PixelsQuality(NDVI,SM,output_folder,filename,f_invalid_px):
     pixels = xSize*ySize
     for i in SM_invalid_pixels:
         band_Array_NDVI[i]=nodata
-        counter += 1      
+        counter += 1
     if counter > pixels*f_invalid_px:
-        pass   
+        pass
     else:        
         os.chdir (output_folder)
         driver = gdal.GetDriverByName('GTiff')
@@ -267,11 +267,10 @@ def LAI_Map_Tiff(image_input,output_folder,filename):
 def LAI_Map_Agg(in_raster,output_folder,filename, month, year):
 # Aggregates a list of NDVI maps (%in_raster) for a certain month (%month) and
 # year (%year) and saves an output at a given directory (%output_folder) 
-# using a predefined name (%filename).
+# using a predefined name (%filename). Also returns the list of maps used for aggregation.
     list_of_maps = []
     for i in filename:
         if i[-8:-2] == year+month: list_of_maps.append(i)
-    print list_of_maps
 #looping through selected month and year!
     if len(list_of_maps) == 0:
         pass
@@ -327,6 +326,7 @@ def LAI_Map_Agg(in_raster,output_folder,filename, month, year):
 #        clipped version
         oBand.WriteArray(save_LAI_maps_unmasked)
         del dataset
+    return list_of_maps
 
 def readMap(fileName, ncols, nrows, nodata):
 # Reads a certain map (%fileName) and returns as a 2d numpy array with predefined
@@ -366,9 +366,7 @@ def create_header(from_asc):
     cellsize = float(header[4].split()[1])
     nodata = int(header[5].split()[1])
     f.close()    
-    createHeader = 'ncols ' + str(ncols) + "\n" + 'nrows ' + str(nrows) + "\n" 
-    + 'xllcorner ' + str(xll) + "\n" + 'yllcorner ' + str(yll) + "\n" + 'cellsize ' 
-    + str(cellsize) + "\n" + 'NODATA_value ' + str(nodata)
+    createHeader = 'ncols ' + str(ncols) + "\n" + 'nrows ' + str(nrows) + "\n" + 'xllcorner ' + str(xll) + "\n" + 'yllcorner ' + str(yll) + "\n" + 'cellsize ' + str(cellsize) + "\n" + 'NODATA_value ' + str(nodata)
     return createHeader, ncols, nrows, nodata
 
 def set_nodata(array2d, oldValue, newValue):
@@ -607,9 +605,25 @@ if step5 == 1:
     out_raster = dir_step5    
     
     print '\nStatus report - number of available products for each month'
+    os.chdir(dir_step5)
+    report = open('report.txt','w')
     for i in range(len(years)):
-        for k in range(12):
-            LAI_Map_Agg(in_raster, out_raster, filenames, months[k], years[i])            
+        report.write('\n ===================================================== ')
+        report.write('\n List of maps used for aggregation in the YEAR: ' + str(years[i]) + '\n')
+        name_of_months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        for k in range(12):                
+            add_list = LAI_Map_Agg(in_raster, out_raster, filenames, months[k], years[i])
+            try: 
+                if len(add_list) != 0:
+                    print add_list
+                    report.write('\n ' + str(name_of_months[k]) + ':')
+                    for a in add_list:
+                        b = ' ' + str(a)
+                        report.write(b)
+            except: pass
+    report.write('\n ===================================================== ')
+    print '\nReport saved as report.txt in the file 4_monthly_LAI_tif'
+    report.close()
 else:
     pass
 #---------------------------------------------
