@@ -1,5 +1,5 @@
 #           ProbaV - LAI processing tool
-#                 (4/06/2018)
+#                 (5/06/2018)
 #-------------------------------------------------------
 # - - - MODULES AND WORKING DIRECTORIES - - - - - - - - -
 #-------------------------------------------------------
@@ -251,8 +251,15 @@ def LAI_Map_Tiff(image_input,output_folder,filename):
     LAI_map = np.sqrt(ndvi_map * (1+ndvi_map) / (1-ndvi_map))   
     
     save_LAI_map_Nodata=np.where(ndvi_map == nodata, nodata, LAI_map)
+    border = gdal.Open(dir_input_raster)
+    band_info = border.GetRasterBand(1)
+    border_raster = gdal.Band.ReadAsArray(band_info)
+    LAI_maps = np.where(border_raster == nodata, nodata, np.array(save_LAI_map_Nodata))
+
+    
+    
     os.chdir (output_folder)
-    new_filename = "LAI_Map_" + filename + ".tif" 
+    new_filename = filename + "_LAI.tif" 
     driver = gdal.GetDriverByName('GTiff')
     dataset = driver.Create(new_filename, xSize, ySize, 1, gdal.GDT_Float32)
     dataset.SetGeoTransform(geoTrans)
@@ -260,17 +267,18 @@ def LAI_Map_Tiff(image_input,output_folder,filename):
     oBand = dataset.GetRasterBand(1)
     oBand.SetNoDataValue(nodata)
 #    oBand.WriteArray(LAI_map)
-    oBand.WriteArray(save_LAI_map_Nodata)
+    oBand.WriteArray(LAI_maps)
     
     del dataset
 
 def LAI_Map_Agg(in_raster,output_folder,filename, month, year):
 # Aggregates a list of NDVI maps (%in_raster) for a certain month (%month) and
 # year (%year) and saves an output at a given directory (%output_folder) 
-# using a predefined name (%filename). Also returns the list of maps used for aggregation.
+# using a predefined name (%filename). Also return the list of used for aggregation
+# maps.
     list_of_maps = []
     for i in filename:
-        if i[-8:-2] == year+month: list_of_maps.append(i)
+        if i[0:6] == year+month: list_of_maps.append(i)
 #looping through selected month and year!
     if len(list_of_maps) == 0:
         pass
@@ -312,8 +320,8 @@ def LAI_Map_Agg(in_raster,output_folder,filename, month, year):
 
         os.chdir(output_folder)
         name = list_of_maps[0]
-        date = name[-8:-2]
-        image_output = output_folder + "\\Monthly_LAI_" + str(date) + ".tif" 
+        date = name[:7]
+        image_output = output_folder + "\\" + str(date) + "_MonthlyLAI.tif" 
 
         driver = gdal.GetDriverByName('GTiff')
         dataset = driver.Create(image_output, xSize, ySize, 1, gdal.GDT_Float32)
@@ -547,6 +555,13 @@ else:
 if step3 == 1:
     print '\nGenerating LAI.tif maps...'    
     Myfiles3=SearchFolder(dir_step2, '.tif')
+    dates = []
+    for i in range (len(Myfiles3)):
+        breakList = Myfiles3[i].split("\\")
+        fn = breakList [-1]
+        fn2 = fn.split("_")
+        fn2 = fn2[0]
+        dates.append(fn2)
     
     for i in range (len(Myfiles3)):
         in_raster = dir_step2 + "\\" + Myfiles3[i]
@@ -566,9 +581,17 @@ if step4 == 1:
     print '\nGenerating LAI.asc maps...'
     Myfiles4=SearchFolder(dir_step3, '.tif')
     os.chdir(dir_step4)
+    dates = []
+    for i in range (len(Myfiles4)):
+        breakList = Myfiles4[i].split("\\")
+        fn = breakList [-1]
+        fn2 = fn.split("_")
+        fn2 = fn2[0]
+        dates.append(fn2)
+        
     for i in range (len(Myfiles4)):
         in_raster = dir_step3 + "\\" + Myfiles4[i]
-        out_raster = dir_step4 + "\\LAI_" + dates[i] + ".asc"
+        out_raster = dir_step4 + "\\" + dates[i] + "_LAI.asc"
         if os.path.exists(out_raster):
             os.remove(out_raster)
         cmd= 'gdal_translate -q -of AAIGrid %s %s' % (in_raster, out_raster)    
@@ -581,7 +604,7 @@ else:
 if step5 == 1:
 #    print '\n Step 5'
     print '\nGenerating monthly aggregated LAI.tif maps... '
-    Myfiles5=SearchFolder(dir_step3, '.tif')        
+    Myfiles5=SearchFolder(dir_step3, '.tif')  
     data_src = gdal.Open(dir_step3 + "\\" + Myfiles5[0])
     band_info = data_src.GetRasterBand(1)  
     filenames = []
@@ -592,8 +615,9 @@ if step5 == 1:
         fn = fn[:-4]
         filenames.append(fn)
         fn2 = fn.split("_")
-        fn2 = fn2[-1]
+        fn2 = fn2[0]
         dates.append(fn2)
+    
     years = []
     months = ['01', '02', '03', '04','05', '06','07', '08','09', '10','11', '12']
     for j in range (len(dates)):
@@ -641,11 +665,11 @@ if step6 == 1:
         fn = fn[:-4]
         filenames.append(fn)
         fn2 = fn.split("_")
-        fn2 = fn2[-1]
+        fn2 = fn2[0]
         dates.append(fn2)    
     for i in range (len(Myfiles6)):
         in_raster = dir_step5 + "\\" + Myfiles6[i]
-        out_raster = dir_step6 + "\\" + dates[i] + ".asc"
+        out_raster = dir_step6 + "\\" + dates[i] + "_MonthlyLAI.asc"
         
         if os.path.exists(out_raster):
             os.remove(out_raster)
