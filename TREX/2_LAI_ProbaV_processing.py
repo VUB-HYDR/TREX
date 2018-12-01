@@ -1,5 +1,5 @@
-#           ProbaV - LAI processing tool
-#                 (5/06/2018)
+#     TREX - Tool for Raster data EXploration
+#                 (1/12/2018)
 #-------------------------------------------------------
 # - - - MODULES AND WORKING DIRECTORIES - - - - - - - - -
 #-------------------------------------------------------
@@ -320,7 +320,7 @@ def LAI_Map_Agg(in_raster,output_folder,filename, month, year):
 
         os.chdir(output_folder)
         name = list_of_maps[0]
-        date = name[:7]
+        date = name[:6]
         image_output = output_folder + "\\" + str(date) + "_MonthlyLAI.tif" 
 
         driver = gdal.GetDriverByName('GTiff')
@@ -714,7 +714,7 @@ if step7 == 1:
         if len(noData_pixels) == 0:
             os.chdir(dir_step7)
             raster_n[nodata_mask == reference_nodata] = nodata                       
-            np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.16f', header=get_header[0], comments='')
+            np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.2f', header=get_header[0], comments='')
         else:
             print '\nInterpolating ' + str(len(noData_pixels)) + ' values of ' + str(Myfiles7[j])
             os.chdir(dir_step6)
@@ -756,8 +756,7 @@ if step7 == 1:
                 except: raster_n[k] = filler
             os.chdir(dir_step7)
             raster_n[nodata_mask == reference_nodata] = nodata
-            np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.16f', header=get_header[0], comments='')
+            np.savetxt('int_' + str(Myfiles7[j]) + '.asc', raster_n, fmt='%10.2f', header=get_header[0], comments='')
 #---------------------------------------------
 
-get_ipython().magic('reset -sf')
 print '\n PROCESSING COMPLETE'
