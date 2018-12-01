@@ -1,5 +1,6 @@
-#           ProbaV - LAI visualization tool
-#                 (5/06/2018)
+#     TREX - Tool for Raster data EXploration
+#                 (1/12/2018)
+#-------------------------------------------------------
 #-------------------------------------------------------
 # - - - MODULES AND WORKING DIRECTORIES - - - - - - - - -
 #-------------------------------------------------------
@@ -10,7 +11,7 @@ import numpy as np
 import numpy.ma as ma
 import matplotlib.pyplot as plt
 
-max_value = 6
+max_value = 2
 
 #-------------------------------------------------------
 # - - - READ SETUP - - - - - - - - - - - - - - - - -
@@ -234,12 +235,12 @@ if step8 == 1:
         plt.imshow(masked, extent=[0, get_header[1], get_header[2], 0],
                    vmin=0, vmax=max_value, cmap="jet", interpolation="none", aspect='equal' )
         #plt.imshow(masked, vmin=0, vmax=1, cmap="YlGn", interpolation="none", aspect='auto' )
-        cbar = plt.colorbar(orientation='vertical')
+        cbar = plt.colorbar(orientation='horizontal')
         cbar.set_label('LAI [-] 5-day synthesize')
 #        plt.xlabel('Number of columns')
 #        plt.ylabel('Number of rows')
         os.chdir(dir_step8)  
-        plt.savefig(j[:-4] + '.jpeg' , transparent=True, dpi=200)
+        plt.savefig(j[:-4] + '.png' , transparent=True, dpi=200)
         plt.close()
 
 else:
@@ -274,12 +275,12 @@ if step9 == 1:
         plt.clf()
         ay, ax = plt.subplots(figsize=(5, 5)); ax.set_title(k)
         plt.imshow(masked, vmin=0, vmax=max_value, cmap="jet", interpolation="none", aspect='equal' )
-        cbar = plt.colorbar(orientation='vertical')
+        cbar = plt.colorbar(orientation='horizontal')
         cbar.set_label('LAI [-] monthly agg')
 #        plt.xlabel('Number of columns')
 #        plt.ylabel('Number of rows')
         os.chdir(dir_step9)  
-        plt.savefig(j[:-4] + '.jpeg' , transparent=True, dpi=200)
+        plt.savefig(j[:-4] + '.png' , transparent=True, dpi=200)
         plt.close()
 
 #---------------------------------------------
@@ -313,12 +314,12 @@ if step10 == 1:
         ay, ax = plt.subplots(figsize=(5, 5)); ax.set_title(k)
 
         plt.imshow(masked, vmin=0, vmax=max_value, cmap="jet", interpolation="none", aspect='equal' )
-        cbar = plt.colorbar(orientation='vertical')
+        cbar = plt.colorbar(orientation='horizontal')
         cbar.set_label('LAI [-] monthly agg')
 #        plt.xlabel('Number of columns')
 #        plt.ylabel('Number of rows')
         os.chdir(dir_step10)  
-        plt.savefig(j[:-4] + '.jpeg' , transparent=True, dpi=200)
+        plt.savefig(j[:-4] + '.png' , transparent=True, dpi=200)
         plt.close()
 
 else:
