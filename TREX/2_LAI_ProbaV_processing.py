@@ -522,7 +522,7 @@ if step2 == 1:
         new_yll = yll_inp - y_shift
         max_xll = Inp_Extent[2] - x_shift
         max_yll = Inp_Extent[3] - y_shift
-        cmd= 'gdal_translate -a_ullr %s %s %s %s -stats %s %s' % (new_xll,max_yll,max_xll,new_yll, in_raster, out_raster)
+        cmd= 'gdal_translate -q -a_ullr %s %s %s %s -stats %s %s' % (new_xll,max_yll,max_xll,new_yll, in_raster, out_raster)
         os.system (cmd)         
     print 'x shift: ' + str(x_shift) + ' [m]'
     print 'y shift: ' + str(y_shift) + ' [m]'    
