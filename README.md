@@ -4,7 +4,7 @@
 Authors: Joanna Suliga, Joy Bhattacharjee, Boud Verbeiren
 Contact author: Joanna Suliga, joanna.suliga@vub.be
 
-# 1. Intro
+# 1. Introduction
 ---
 Tool for Raster data EXploration has various application, however the main objective is to automatically process ProbaV sattelite images into timeseries of Leaf Area Index and challenge the negative impact of cloud coverege on optical sattelite data. As long as satelite can provide images for selected study area, this tool is flexible enough to process data:
 * for any period of time,
@@ -24,7 +24,7 @@ Pixels of ProbaV images after reprojecting from orginal degree units into metric
 
 # 2. Installation
 ---
-The easiest way to set up the tool is to install [Anaconda](https://www.anaconda.com/download/) for Python 2.7.14 Anaconda provides [Spyder](https://pythonhosted.org/spyder/) Python environment, manages the installation of Python packages and handles enviromental variables for Windows. The table below specifies which version of Python packages were used for scripts development and should be installed before running the script:
+The easiest way to set up the tool is to install [ANACONDA](https://www.anaconda.com/download/) for Python 2.7.14 Anaconda provides [Spyder](https://pythonhosted.org/spyder/) Python environment, manages the installation of Python packages and handles enviromental variables for Windows. If you are expecting a conflict between installed software (ex. ArcGIS) and Anaconda please try this [MANUAL](https://github.com/VUB-HYDR/TREX/blob/master/MANUAL.md). The table below specifies which version of Python packages were used for scripts development and should be installed before running the script:
 
  #| name       | 	version
 --|------------|-
@@ -42,7 +42,7 @@ More recent versions of listed packages should be still compatible.
 
 # 3. Tool's structure
 ---
-Tool's folder has a fixed structure that has to be respected and never modified, unless those changes are fully intended. Tool consists of three scripts written in Python 2.7, setup text file, folder with temporal data and folders containing input or output data. Scripts do not interact with each other but saves and reads data from different folders. User through "LAI_ProbaV_setup.txt" file can specify which of type input or output scripts will read and process. Each script should be run seperetely using [Spyder](https://pythonhosted.org/spyder/) Python environment. 
+Tool's folder has a fixed structure that has to be respected and never modified, unless those changes are fully intended. Tool consists of three scripts written in Python 2.7, setup text file, folder with temporal data and folders containing input or output data. Scripts do not interact with each other but saves and reads data from different folders. User through "LAI_ProbaV_setup.txt" file can specify which of type input or output scripts will read and process. Each script should be run seperetely using [SPYDER](https://pythonhosted.org/spyder/) Python environment. 
 ![ Graph.1 Structure ](./graphs/structure.JPG)
 ### Input data
 There are three types of input data for the tool:
