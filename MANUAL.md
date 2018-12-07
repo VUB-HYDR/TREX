@@ -24,6 +24,7 @@ Some platforms like Anaconda are very useful in previewing/installing/updating P
 2.	Install ArcGIS, QGIS… 
 3.	Install [Microsoft Visual C++ Compiler for Python 2.7](https://www.microsoft.com/EN-US/DOWNLOAD/confirmation.aspx?id=44266) from MS  
 4.	Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables -> Path (click and add new directories as follow:
+
 a.	C:\Python27\
 b.	C:\Python27\Scripts
 c.	C:\Python27\Lib\site-packages
@@ -51,14 +52,23 @@ Advanced alternative solution: Start -> type "run" > type "regedit"
 1.	Create a text file and save as .py. 
 2.	Open with IDLE
 3.	Check python paths by selecting File -> Path Browser. Paths fixed in Step 1 should be there! 
-4.	Test importing packages by adding lines ex. ‘import os’ ‘import numpy’ ‘import pandas’ ‘import gdal’ to the script and press F5. At this step, importing may fail.
+4.	Test importing packages (examples listed below) to the script and press F5. At this step, importing should fail.
+
+> import os
+> import numpy
+> import pandas
+> import gdal 
 
 # Step 4. Importing pure Python packages with PIP
 ---
 
 1.	Open cmd (Windows command prompt) as administrator
-2.	We will use inbuilt Python package PIP to preview/install/update. Assume we want to install numpy - type in cmd: pip install numpy. Test importing your packages with test.py. Complex packages may require additional packages to be-preinstalled. Command ‘pip install’ should do this for you.
-3.	Errors? Let’s see what could have gone wrong…
+2.	We will use inbuilt Python package PIP to preview/install/update. Assume we want to install numpy - type in cmd: 
+> pip install numpy.
+
+3. Test importing your packages with test.py. Complex packages may require additional packages to be-preinstalled. Command ‘pip install’ should do this for you.
+4.	Errors? Let’s see what could have gone wrong…
+
 a.	Run CMD as administrator
 b.	Microsoft Visual C++ 9.0 is missing
 c.	pip install wheel (see Step 5.2)
@@ -95,6 +105,7 @@ GDAL isn’t a pure Python code therefore it requires getting extra binary library
 > pip install gdal
 
 3.	Errors? Let’s see what could have gone wrong…
+
 a.	Run cmd as administrator
 b.	Microsoft Visual C++ 9.0 is missing
 c.	pip install wheel (see Step 4.2)
@@ -117,6 +128,7 @@ An alternative for Spyder interpreter might be Visual Studio Code.
 
 1.	Download and install [Visual Studio Code](https://code.visualstudio.com/Download)
 2.	Make sure that you have the following paths in your ‘Path’ Windows environmental variables
+
 a.	C:\Python27\
 b.	C:\Python27\Scripts
 c.	C:\Python27\Lib\site-packages
