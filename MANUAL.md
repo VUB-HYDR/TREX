@@ -10,17 +10,12 @@ Some remarks:
 Unfortunately, manual installation of Python packages requires knowing the exact dependencies between all desired (and possible additional) packages.
 Some platforms like Anaconda are very useful in previewing/installing/updating Python packages and getting Spyder Python interpreter but if not managed carefully, will likely corrupt ArcGIS packages. Especially older versions of ArcGIS are very vulnerable because they can only work with the older and not supported versions of Python packages. In addition, ArcGIS tends to overwrite the original Python interpreter & shell IDLE with its own version (also called IDLE…) that ignores windows environments specified by User. 
 
-Please find below a solution* for fixing Windows environments and installing advanced python packages (ex. GDAL) for your PC without corrupting ArcGIS.
-*a tiny disclaimer – so far worked for me but I’m looking forward for your feedback! 
-
-Content:
-	Step 1-4 	How to import pure Python packages without Anaconda, Canopy etc.
-	Step 5		How to install GDAL for Python
-	Step 6 		How to install PCraster
-	Step 7 		How to install Visual Studio Code (instead of Anaconda’s Spyder)
-
-
-This solution requires administration rights or requesting help from IT.
+ Step | Explanation
+------|-------------
+ 1-4  | How to import Python packages
+ 5    | How to install GDAL 
+ 6    | How to install PCraster
+ 7    | How to install Visual Studio Code
 
 # Step 1. Install Python and ArcGIS
 ---
