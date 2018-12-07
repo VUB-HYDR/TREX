@@ -97,10 +97,20 @@ GDAL isn’t a pure Python code therefore it requires getting extra binary library
 > pip install C:\Users\NameOfTheUser\Downloads\GDAL-2.2.4-cp27-cp27m-win_amd64.whl
 
 > pip install gdal
-3. Errors? Let’s see what could have gone wrong…
-	1. Run cmd as administrator
-	2. Microsoft Visual C++ 9.0 is missing
-	3. pip install wheel (see Step 4.2)
+
+3. Adjust windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables -> Add GDAL_DATA variable with a value:  
+
+> C:\Python27\Lib\site-packages\osgeo\data\gdal 
+
+4. Adjust windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables ->  Add GDAL_DRIVER_PATH variable with a value:  
+
+> C:\Python27\Lib\site-packages\osgeo\gdalplugins 
+
+5. Move ogr_FileGDB.dll  
+
+> from C:\Python27\Lib\site-packages\osgeo\gdalplugins   
+
+> to C:\Python27\Lib\site-packages\osgeo 
 
 <img src="./graphs/manual_5.PNG" />
 
@@ -109,10 +119,15 @@ GDAL isn’t a pure Python code therefore it requires getting extra binary library
 PCRaster allows opening and previewing maps in .asc and .tif format without opening QGIS/ArcGIS.
 
 1. Download and unzip [PCraster](http://pcraster.geo.uu.nl/downloads/latest-release/) in C:\Program Files
-2. Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables:
-	1. Path (click and add C:\Program Files\pcraster-4.1.0_x86-64\bin)
-	2. PYTHONPATH (click and add C:\Program Files\pcraster-4.1.0_x86-64\python)
-3.To auto-open .asc .tif files with Aguila from PCraster repeat points 1-4 from the Step 4. Navigate to C:\Program Files\pcraster-4.1.0_x86-64\bin and select aguila.
+2. Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables -> Add Path variable with a value:
+
+> C:\Program Files\pcraster-4.1.0_x86-64\bin
+
+2. Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables -> Add PYTHONPATH variable with a value:
+
+> C:\Program Files\pcraster-4.1.0_x86-64\python
+
+3. To auto-open .asc .tif files with Aguila from PCraster repeat points 1-4 from the Step 4. Navigate to C:\Program Files\pcraster-4.1.0_x86-64\bin and select aguila.
 
 # Step 7. Install Visual Studio Code
 ---
