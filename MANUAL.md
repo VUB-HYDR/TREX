@@ -25,9 +25,9 @@ Some platforms like Anaconda are very useful in previewing/installing/updating P
 3.	Install [Microsoft Visual C++ Compiler for Python 2.7](https://www.microsoft.com/EN-US/DOWNLOAD/confirmation.aspx?id=44266) from MS  
 4.	Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables -> Path (click and add new directories as follow:
 
-a.	C:\Python27\
-b.	C:\Python27\Scripts
-c.	C:\Python27\Lib\site-packages
+	a.C:\Python27\
+	b.C:\Python27\Scripts
+	c.C:\Python27\Lib\site-packages
 
 <img src="./graphs/manual_1.PNG" />
 
@@ -62,19 +62,18 @@ Advanced alternative solution: Start -> type "run" > type "regedit"
 # Step 4. Importing pure Python packages with PIP
 ---
 
-1.	Open cmd (Windows command prompt) as administrator
-2.	We will use inbuilt Python package PIP to preview/install/update. Assume we want to install numpy - type in cmd: 
+1.Open cmd (Windows command prompt) as administrator
+2.We will use inbuilt Python package PIP to preview/install/update. Assume we want to install numpy - type in cmd: 
 > pip install numpy.
 
 3. Test importing your packages with test.py. Complex packages may require additional packages to be-preinstalled. Command ‘pip install’ should do this for you.
-4.	Errors? Let’s see what could have gone wrong…
+4.Errors? Let’s see what could have gone wrong…
 
-a.	Run CMD as administrator
-b.	Microsoft Visual C++ 9.0 is missing
-c.	pip install wheel (see Step 5.2)
+	a.Run CMD as administrator
+	b.Microsoft Visual C++ 9.0 is missing
+	c.pip install wheel (see Step 5.2)
 
-Test importing your package with test.py
-4.	Here you can find more commands to be typed in cmd:
+5.Here you can find more commands to be typed in cmd:
 > python --version
 
 > pip --version pip is the inbuilt python package
@@ -97,18 +96,18 @@ Test importing your package with test.py
 ---
 GDAL isn’t a pure Python code therefore it requires getting extra binary library for Windows. To pull installation file from the server, firstly download a binary library called [wheel](https://www.lfd.uci.edu/~gohlke/pythonlibs/#gdal). Select a version compatible with your Windows and python bit version. To install GDAL follow those steps:
 
-1.	Open cmd (Windows command prompt) as administrator
-2.	For GDAL 2.2.4 for 64bit Windows and Python 2.7 type in cmd:
+1.Open cmd (Windows command prompt) as administrator
+2.For GDAL 2.2.4 for 64bit Windows and Python 2.7 type in cmd:
 
 > pip install C:\Users\NameOfTheUser\Downloads\GDAL-2.2.4-cp27-cp27m-win_amd64.whl
 
 > pip install gdal
 
-3.	Errors? Let’s see what could have gone wrong…
+3.Errors? Let’s see what could have gone wrong…
 
-a.	Run cmd as administrator
-b.	Microsoft Visual C++ 9.0 is missing
-c.	pip install wheel (see Step 4.2)
+	a.Run cmd as administrator
+	b.Microsoft Visual C++ 9.0 is missing
+	c.pip install wheel (see Step 4.2)
 
 <img src="./graphs/manual_5.PNG" />
 
@@ -116,11 +115,14 @@ c.	pip install wheel (see Step 4.2)
 ---
 PCRaster allows opening and previewing maps in .asc and .tif format without opening QGIS/ArcGIS.
 
-1.	Download and unzip [PCraster](http://pcraster.geo.uu.nl/downloads/latest-release/) in C:\Program Files
-2.	Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables 
--> Path (click and add C:\Program Files\pcraster-4.1.0_x86-64\bin)
--> PYTHONPATH (click and add C:\Program Files\pcraster-4.1.0_x86-64\python)
-3.	To auto-open .asc .tif files with Aguila from PCraster repeat points 1-4 from the Step 4. Navigate to C:\Program Files\pcraster-4.1.0_x86-64\bin and select aguila.
+1.Download and unzip [PCraster](http://pcraster.geo.uu.nl/downloads/latest-release/) in C:\Program Files
+2.Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables 
+
+	-> Path (click and add C:\Program Files\pcraster-4.1.0_x86-64\bin)
+
+	-> PYTHONPATH (click and add C:\Program Files\pcraster-4.1.0_x86-64\python)
+
+3.To auto-open .asc .tif files with Aguila from PCraster repeat points 1-4 from the Step 4. Navigate to C:\Program Files\pcraster-4.1.0_x86-64\bin and select aguila.
 
 # Step 7. Install Visual Studio Code
 ---
@@ -129,10 +131,10 @@ An alternative for Spyder interpreter might be Visual Studio Code.
 1.	Download and install [Visual Studio Code](https://code.visualstudio.com/Download)
 2.	Make sure that you have the following paths in your ‘Path’ Windows environmental variables
 
-a.	C:\Python27\
-b.	C:\Python27\Scripts
-c.	C:\Python27\Lib\site-packages
-d.	C:\Program Files\Microsoft VS Code\bin
+	a. C:\Python27\
+	b. C:\Python27\Scripts
+	c. C:\Python27\Lib\site-packages
+	d. C:\Program Files\Microsoft VS Code\bin
 
 (Special thanks for Celray!)
 
