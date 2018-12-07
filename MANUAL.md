@@ -20,14 +20,13 @@ Some platforms like Anaconda are very useful in previewing/installing/updating P
 # Step 1. Install Python and ArcGIS
 ---
 
-1.	Install Python 2.7
-2.	Install ArcGIS, QGIS… 
-3.	Install [Microsoft Visual C++ Compiler for Python 2.7](https://www.microsoft.com/EN-US/DOWNLOAD/confirmation.aspx?id=44266) from MS  
-4.	Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables -> Path (click and add new directories as follow:
-
-	a.C:\Python27\
-	b.C:\Python27\Scripts
-	c.C:\Python27\Lib\site-packages
+1. Install Python 2.7
+2. Install ArcGIS, QGIS… 
+3. Install [Microsoft Visual C++ Compiler for Python 2.7](https://www.microsoft.com/EN-US/DOWNLOAD/confirmation.aspx?id=44266) from MS  
+4. Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables -> Path (click and add new directories as follow:
+	1.C:\Python27\
+	2.C:\Python27\Scripts
+	3.C:\Python27\Lib\site-packages
 
 <img src="./graphs/manual_1.PNG" />
 
@@ -37,22 +36,21 @@ Some platforms like Anaconda are very useful in previewing/installing/updating P
 ArcGIS installs its own Python interpreter which has the exact same name (IDLE) as the original Python interpreter. Even more, ArcGIS-IDLE sets itself as the default interpreter for all .py files. ArcGIS-IDLE is only searching for packages inside C:\Python27\ArcGIS10.1 and ignores Windows environments settings. Copy-pasting new packages to original ArcGIS folder may corrupt ArcPy therefore it’s highly advised to set original IDLE as default interpreter again and run scripts using packages located in C:\Python27\Lib\site-packages.
 For Windows 10
 
-1.	Right- click any .py file and select -> Open with…
-2.	Tick the box ‘Always use this app to open .py files’
-3.	Select -> More apps
-4.	Scroll down and select -> Look for another app on this PC
-5.	Navigate to C:\Python27\Lib\idlelib and select ‘idle’ 
-Advanced alternative solution: Start -> type "run" > type "regedit"
+1. Right click any .py file and select -> Open with…
+2. Tick the box ‘Always use this app to open .py files’
+3. Select -> More apps
+4. Scroll down and select -> Look for another app on this PC
+5. Navigate to C:\Python27\Lib\idlelib and select ‘idle’. Advanced alternative solution: Start -> type "run" > type "regedit"
 
 <img src="./graphs/manual_22.PNG" />
 
 # Step 3. Create a test .py file and open in the original python interpreter
 ---
 
-1.	Create a text file and save as .py. 
-2.	Open with IDLE
-3.	Check python paths by selecting File -> Path Browser. Paths fixed in Step 1 should be there! 
-4.	Test importing packages (examples listed below) to the script and press F5. At this step, importing should fail.
+1. Create a text file and save as .py. 
+2. Open with IDLE
+3. Check python paths by selecting File -> Path Browser. Paths fixed in Step 1 should be there! 
+4. Test importing packages (examples listed below) to the script and press F5. At this step, importing should fail.
 
 > import os
 > import numpy
@@ -67,11 +65,10 @@ Advanced alternative solution: Start -> type "run" > type "regedit"
 > pip install numpy.
 
 3. Test importing your packages with test.py. Complex packages may require additional packages to be-preinstalled. Command ‘pip install’ should do this for you.
-4.Errors? Let’s see what could have gone wrong…
-
-	a.Run CMD as administrator
-	b.Microsoft Visual C++ 9.0 is missing
-	c.pip install wheel (see Step 5.2)
+4. Errors? Let’s see what could have gone wrong…
+	1. Run CMD as administrator
+	2. Microsoft Visual C++ 9.0 is missing
+	3. pip install wheel (see Step 5.2)
 
 5.Here you can find more commands to be typed in cmd:
 > python --version
@@ -104,10 +101,9 @@ GDAL isn’t a pure Python code therefore it requires getting extra binary library
 > pip install gdal
 
 3.Errors? Let’s see what could have gone wrong…
-
-	a.Run cmd as administrator
-	b.Microsoft Visual C++ 9.0 is missing
-	c.pip install wheel (see Step 4.2)
+	1. Run cmd as administrator
+	2. Microsoft Visual C++ 9.0 is missing
+	3. pip install wheel (see Step 4.2)
 
 <img src="./graphs/manual_5.PNG" />
 
@@ -128,13 +124,12 @@ PCRaster allows opening and previewing maps in .asc and .tif format without open
 ---
 An alternative for Spyder interpreter might be Visual Studio Code.
 
-1.	Download and install [Visual Studio Code](https://code.visualstudio.com/Download)
-2.	Make sure that you have the following paths in your ‘Path’ Windows environmental variables
-
-	a. C:\Python27\
-	b. C:\Python27\Scripts
-	c. C:\Python27\Lib\site-packages
-	d. C:\Program Files\Microsoft VS Code\bin
+1. Download and install [Visual Studio Code](https://code.visualstudio.com/Download)
+2. Make sure that you have the following paths in your ‘Path’ Windows environmental variables
+	1. C:\Python27\
+	2. C:\Python27\Scripts
+	3. C:\Python27\Lib\site-packages
+	4. C:\Program Files\Microsoft VS Code\bin
 
 (Special thanks for Celray!)
 
