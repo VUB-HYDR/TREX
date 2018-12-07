@@ -30,7 +30,7 @@ a.	C:\Python27\
 b.	C:\Python27\Scripts
 
 c.	C:\Python27\Lib\site-packages
-<img src="./graphs/manual_1" align="right" />
+<img src="./graphs/manual_1.PNG" align="right" />
 
 
 # Step 2. Set the original IDLE as default
@@ -44,7 +44,7 @@ For Windows 10
 4.	Scroll down and select -> Look for another app on this PC
 5.	Navigate to C:\Python27\Lib\idlelib and select ‘idle’ 
 Advanced alternative solution: Start -> type "run" > type "regedit"
-<img src="./graphs/manual_22" align="right" />
+<img src="./graphs/manual_22.PNG" align="right" />
 
 # Step 3. Create a test .py file and open in the original python interpreter
 ---
@@ -108,7 +108,7 @@ a.	Run cmd as administrator
 b.	Microsoft Visual C++ 9.0 is missing
 
 c.	pip install wheel (see Step 4.2)
-<img src="./graphs/manual_5" align="right" />
+<img src="./graphs/manual_5.PNG" align="right" />
 
 # Step 6. Install PCRaster
 ---
