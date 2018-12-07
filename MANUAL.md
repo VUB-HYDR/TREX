@@ -53,8 +53,11 @@ For Windows 10
 4. Test importing packages (examples listed below) to the script and press F5. At this step, importing should fail.
 
 > import os
+
 > import numpy
+
 > import pandas
+
 > import gdal 
 
 # Step 4. Importing pure Python packages with PIP
@@ -89,7 +92,10 @@ For Windows 10
 
 # Step 5. Install GDAL
 ---
-GDAL isn’t a pure Python code therefore it requires getting extra binary library for Windows. To pull installation file from the server, firstly download a binary library called [wheel](https://www.lfd.uci.edu/~gohlke/pythonlibs/#gdal). Select a version compatible with your Windows and python bit version. To install GDAL follow those steps:
+GDAL isn’t a pure Python code therefore it requires getting extra binary library for Windows. To pull installation file from the server, firstly download a binary library called [wheel](https://www.lfd.uci.edu/~gohlke/pythonlibs/#gdal). Select a version compatible with your Windows and python bit version. 
+<img src="./graphs/manual_5.PNG" />
+
+To install GDAL follow those steps:
 
 1. Open cmd (Windows command prompt) as administrator
 2. For GDAL 2.2.4 for 64bit Windows and Python 2.7 type in cmd:
@@ -112,7 +118,7 @@ GDAL isn’t a pure Python code therefore it requires getting extra binary library
 
 > to C:\Python27\Lib\site-packages\osgeo 
 
-<img src="./graphs/manual_5.PNG" />
+<img src="./graphs/manual_51.PNG" />
 
 # Step 6. Install PCRaster
 ---
@@ -126,6 +132,7 @@ PCRaster allows opening and previewing maps in .asc and .tif format without open
 2. Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables -> Add PYTHONPATH variable with a value:
 
 > C:\Program Files\pcraster-4.1.0_x86-64\python
+<img src="./graphs/manual_62.PNG" />
 
 3. To auto-open .asc .tif files with Aguila from PCraster repeat points 1-4 from the Step 4. Navigate to C:\Program Files\pcraster-4.1.0_x86-64\bin and select aguila.
 
