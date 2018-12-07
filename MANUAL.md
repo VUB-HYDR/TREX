@@ -24,9 +24,14 @@ Some platforms like Anaconda are very useful in previewing/installing/updating P
 2.	Install ArcGIS, QGIS… 
 3.	Install [Microsoft Visual C++ Compiler for Python 2.7](https://www.microsoft.com/EN-US/DOWNLOAD/confirmation.aspx?id=44266) from MS  
 4.	Adjust Windows environments: File explorer -> This PC (Right click) -> Properties -> Advanced system settings -> Environment Variables… -> System variables -> Path (click and add new directories as follow:
+
 a.	C:\Python27\
+
 b.	C:\Python27\Scripts
+
 c.	C:\Python27\Lib\site-packages
+<img src="./graphs/manual_1" align="right" />
+
 
 # Step 2. Set the original IDLE as default
 ---
@@ -39,6 +44,7 @@ For Windows 10
 4.	Scroll down and select -> Look for another app on this PC
 5.	Navigate to C:\Python27\Lib\idlelib and select ‘idle’ 
 Advanced alternative solution: Start -> type "run" > type "regedit"
+<img src="./graphs/manual_22" align="right" />
 
 # Step 3. Create a test .py file and open in the original python interpreter
 ---
@@ -56,19 +62,32 @@ Advanced alternative solution: Start -> type "run" > type "regedit"
 Test importing your packages with test.py
 Complex packages may require additional packages to be-preinstalled. Command ‘pip install’ should do this for you.
 3.	Errors? Let’s see what could have gone wrong…
+
 a.	Run CMD as administrator
+
 b.	Microsoft Visual C++ 9.0 is missing
+
 c.	pip install wheel (see Step 5.2)
+
 Test importing your package with test.py
 4.	Here you can find more commands to be typed in cmd:
+
 python --version
+
 pip --version pip is the inbuilt python package
+
 pip list returns a list of installed using PIP packages
+
 pip show ‘nameOfThePackage’ returns the version of the package ‘nameOfThePackage’ and paths
+
 pip search ‘nameOfThePackage’ returns available packages
+
 pip install ‘nameOfThePackage’ pulls and installs the newest package ‘nameOfThePackage’
+
 pip uninstall ‘nameOfThePackage’
+
 pip install --upgrade ‘nameOfThePackage’
+
 pip freeze returns a list of packages installed with pip
 
 # Step 5. Install GDAL
@@ -77,12 +96,19 @@ GDAL isn’t a pure Python code therefore it requires getting extra binary library
 
 1.	Open cmd (Windows command prompt) as administrator
 2.	For GDAL 2.2.4 for 64bit Windows and Python 2.7 type in cmd:
+
 pip install C:\Users\NameOfTheUser\Downloads\GDAL-2.2.4-cp27-cp27m-win_amd64.whl
+
 pip install gdal
+
 3.	Errors? Let’s see what could have gone wrong…
+
 a.	Run cmd as administrator
+
 b.	Microsoft Visual C++ 9.0 is missing
+
 c.	pip install wheel (see Step 4.2)
+<img src="./graphs/manual_5" align="right" />
 
 # Step 6. Install PCRaster
 ---
