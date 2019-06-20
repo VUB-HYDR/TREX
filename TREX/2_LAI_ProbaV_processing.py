@@ -1,5 +1,5 @@
 #     TREX - Tool for Raster data EXploration
-#                 (1/12/2018)
+#                 (20/06/2019)
 #-------------------------------------------------------
 # - - - MODULES AND WORKING DIRECTORIES - - - - - - - - -
 #-------------------------------------------------------
@@ -710,11 +710,12 @@ if step7 == 1:
         raster_n = readMap(Myfiles7[j], get_header[1], get_header[2], get_header[3])
         raster_n[nodata_mask == reference_nodata] = np.nan
         #check if raster_n has nodata
-        noData_pixels = zip(*np.where(raster_n == nodata))        
+        noData_pixels = zip(*np.where(raster_n == nodata))       
         if len(noData_pixels) == 0:
             os.chdir(dir_step7)
             raster_n[nodata_mask == reference_nodata] = nodata                       
-            np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.2f', delimiter=',', header=get_header[0], comments='')
+            #np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.2f', header=get_header[0], comments='')
+            np.savetxt('int_' + str(Myfiles7[j]) + '.asc', raster_n, fmt='%10.2f', delimiter=',', header=get_header[0], comments='')
         else:
             print '\nInterpolating ' + str(len(noData_pixels)) + ' values of ' + str(Myfiles7[j])
             os.chdir(dir_step6)
