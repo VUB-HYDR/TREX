@@ -26,7 +26,7 @@ for i in range(5):
     read_setup.readline()
 # read line #6 reference raster
 reference_raster = read_setup.readline().split()
-dir_input_raster = current_dir + "\\reference_maps\\" + reference_raster[-1]
+dir_input_raster = current_dir + "/reference_maps/" + reference_raster[-1]
 
 # skip line #7 
 read_setup.readline()
@@ -58,14 +58,14 @@ step6 = int(step6[-1])
 step7 = read_setup.readline().split()
 step7 = int(step7[-1])
 
-dir_input_maps = current_dir + "\\probaV_download"
-dir_step2 = current_dir + "\\main\\1_NDVI_tif"
-dir_step3 = current_dir + "\\main\\2_LAI_tif"
-dir_step4 = current_dir + "\\main\\3_LAI_asc"
-dir_step5 = current_dir + "\\main\\4_monthly_LAI_tif"
-dir_step6 = current_dir + "\\main\\5_monthly_LAI_asc"
-dir_step7 = current_dir + "\\main\\6_inter_LAI_asc"
-temp = current_dir + "\main\\temp"
+dir_input_maps = current_dir + "/probaV_download"
+dir_step2 = current_dir + "/main/1_NDVI_tif"
+dir_step3 = current_dir + "/main/2_LAI_tif"
+dir_step4 = current_dir + "/main/3_LAI_asc"
+dir_step5 = current_dir + "/main/4_monthly_LAI_tif"
+dir_step6 = current_dir + "/main/5_monthly_LAI_asc"
+dir_step7 = current_dir + "/main/6_inter_LAI_asc"
+temp = current_dir + "/main/temp"
 
 #-------------------------------------------------------
 # - - - FUNCTIONS - - - FUNCTIONS - - - FUNCTIONS - - -
@@ -89,8 +89,8 @@ def CopyClearTemp(moveFrom, file_format, moveTo):
 # the first folder (%moveFrom).    
     tempFiles=SearchFolder(moveFrom, file_format)        
     for i in range (len(tempFiles)):
-        in_raster = moveFrom + "\\" + tempFiles[i]
-        out_raster = moveTo + "\\" + tempFiles[i]
+        in_raster = moveFrom + "/" + tempFiles[i]
+        out_raster = moveTo + "/" + tempFiles[i]
         shutil.copy2(in_raster, out_raster)          
     files = os.listdir(moveFrom)
     path = moveFrom
@@ -286,7 +286,7 @@ def LAI_Map_Agg(in_raster,output_folder,filename, month, year):
 #create i - dimentional matrix per month
         LAI_maps = []
         for i in range(len(list_of_maps)):
-            image_input = in_raster + "\\" + list_of_maps[i] + ".tif"
+            image_input = in_raster + "/" + list_of_maps[i] + ".tif"
 
             data_src = gdal.Open(image_input)
             band_info = data_src.GetRasterBand(1)
@@ -321,7 +321,7 @@ def LAI_Map_Agg(in_raster,output_folder,filename, month, year):
         os.chdir(output_folder)
         name = list_of_maps[0]
         date = name[:6]
-        image_output = output_folder + "\\" + str(date) + "_MonthlyLAI.tif" 
+        image_output = output_folder + "/" + str(date) + "_MonthlyLAI.tif" 
 
         driver = gdal.GetDriverByName('GTiff')
         dataset = driver.Create(image_output, xSize, ySize, 1, gdal.GDT_Float32)
@@ -442,7 +442,7 @@ if step2 == 1:
         filenames.append(fn)        
     for i in range (len(Myfiles22)):
         os.chdir (dir_step2)
-        in_raster = dir_step2 + "\\" + Myfiles22[i]
+        in_raster = dir_step2 + "/" + Myfiles22[i]
         NDVI_conversion(in_raster, temp, filenames[i])   
     CopyClearTemp(temp, '.tif', dir_step2)
 #---------------------------------------------
@@ -451,7 +451,7 @@ if step2 == 1:
     Myfiles23=SearchFolder(dir_step2, 'NDVI.tif')  
     for i in range (len(Myfiles23)):
         os.chdir (dir_step2)
-        in_raster = dir_step2 + "\\" + Myfiles23[i]
+        in_raster = dir_step2 + "/" + Myfiles23[i]
         NDVI_correction(in_raster, temp, filenames[i])  
     CopyClearTemp(temp, '.tif', dir_step2)   
 #---------------------------------------------
@@ -459,8 +459,8 @@ if step2 == 1:
     Myfiles24=SearchFolder(dir_step2, '.tif')     
     for i in range (len(Myfiles24)):
         os.chdir (dir_step2)
-        in_raster = dir_step2 + "\\" + Myfiles24[i]
-        out_raster = temp + '\\' + Myfiles24[i]
+        in_raster = dir_step2 + "/" + Myfiles24[i]
+        out_raster = temp + '/' + Myfiles24[i]
         CellSize = GetCellSize(in_raster)
         new_xres = CellSize[0]/2
         new_yres = CellSize[1]/2
@@ -479,11 +479,11 @@ if step2 == 1:
     
     for i in range (len(Myfiles25)):
         os.chdir (dir_step2)
-        raster_5 = gdal.Open(dir_step2 + '\\' + Myfiles25[i])
+        raster_5 = gdal.Open(dir_step2 + '/' + Myfiles25[i])
         project_5 = raster_5.GetProjection()
         transform_5 = raster_5.GetGeoTransform()
-        in_raster = dir_step2 + "\\" + Myfiles25[i]
-        out_raster = temp + '\\' + Myfiles25[i]  
+        in_raster = dir_step2 + "/" + Myfiles25[i]
+        out_raster = temp + '/' + Myfiles25[i]  
         cmd= 'gdalwarp -q -multi -of GTiff -co TILED=YES -s_srs %s -t_srs %s -tr %s %s -r cubic -overwrite %s %s' % (project_5, t_project, newt_xres, newt_yres, in_raster, out_raster)
         os.system (cmd)    
     del data_rast
@@ -494,12 +494,12 @@ if step2 == 1:
     Myfiles26=SearchFolder(dir_step2, '.tif')
     for i in range (len(Myfiles26)):
         os.chdir (dir_step2)
-        raster_6 = gdal.Open(dir_step2 + '\\' + Myfiles26[i])
+        raster_6 = gdal.Open(dir_step2 + '/' + Myfiles26[i])
         project_6 = raster_6.GetProjection()
         transform_6 = raster_6.GetGeoTransform()
         os.chdir (dir_step2)
-        in_raster = dir_step2 + "\\" + Myfiles26[i]
-        out_raster = temp + '\\' + Myfiles26[i]
+        in_raster = dir_step2 + "/" + Myfiles26[i]
+        out_raster = temp + '/' + Myfiles26[i]
     #finding the extent of ProbaV maps and raster
         Inp_CellSize = GetCellSize(in_raster)
         cellsize = Inp_CellSize[0]
@@ -533,15 +533,15 @@ if step2 == 1:
     print '\nClipping and generating NDVI.tif maps...'
     Myfiles27=SearchFolder(dir_step2, '.tif')
     #gdaltindex clipper.shp clipshapeRaster.tif
-    cutline = temp + "\\cutline.shp"
+    cutline = temp + "/cutline.shp"
     cmd = 'gdaltindex %s %s' % (cutline, dir_input_raster)
     os.system (cmd)         
     for i in range (len(Myfiles27)):
-        raster_7 = gdal.Open(dir_step2 + '\\' + Myfiles27[i])
+        raster_7 = gdal.Open(dir_step2 + '/' + Myfiles27[i])
         project_7 = raster_7.GetProjection()
         transform_7 = raster_7.GetGeoTransform()
-        in_raster = dir_step2 + "\\" + Myfiles27[i]
-        out_raster = temp + "\\" + Myfiles27[i]
+        in_raster = dir_step2 + "/" + Myfiles27[i]
+        out_raster = temp + "/" + Myfiles27[i]
         cmd= 'gdalwarp -q -multi -of GTiff -co TILED=YES -cutline %s -crop_to_cutline %s %s' % (cutline, in_raster, out_raster)
         os.system (cmd)   
     del raster_7
@@ -557,14 +557,14 @@ if step3 == 1:
     Myfiles3=SearchFolder(dir_step2, '.tif')
     dates = []
     for i in range (len(Myfiles3)):
-        breakList = Myfiles3[i].split("\\")
+        breakList = Myfiles3[i].split("/")
         fn = breakList [-1]
         fn2 = fn.split("_")
         fn2 = fn2[0]
         dates.append(fn2)
     
     for i in range (len(Myfiles3)):
-        in_raster = dir_step2 + "\\" + Myfiles3[i]
+        in_raster = dir_step2 + "/" + Myfiles3[i]
         NDVI_source = gdal.Open(in_raster)
         band_info = NDVI_source.GetRasterBand(1)
         nodata = band_info.GetNoDataValue()
@@ -583,15 +583,15 @@ if step4 == 1:
     os.chdir(dir_step4)
     dates = []
     for i in range (len(Myfiles4)):
-        breakList = Myfiles4[i].split("\\")
+        breakList = Myfiles4[i].split("/")
         fn = breakList [-1]
         fn2 = fn.split("_")
         fn2 = fn2[0]
         dates.append(fn2)
         
     for i in range (len(Myfiles4)):
-        in_raster = dir_step3 + "\\" + Myfiles4[i]
-        out_raster = dir_step4 + "\\" + dates[i] + "_LAI.asc"
+        in_raster = dir_step3 + "/" + Myfiles4[i]
+        out_raster = dir_step4 + "/" + dates[i] + "_LAI.asc"
         if os.path.exists(out_raster):
             os.remove(out_raster)
         cmd= 'gdal_translate -q -of AAIGrid %s %s' % (in_raster, out_raster)    
@@ -605,12 +605,12 @@ if step5 == 1:
 #    print '\n Step 5'
     print '\nGenerating monthly aggregated LAI.tif maps... '
     Myfiles5=SearchFolder(dir_step3, '.tif')  
-    data_src = gdal.Open(dir_step3 + "\\" + Myfiles5[0])
+    data_src = gdal.Open(dir_step3 + "/" + Myfiles5[0])
     band_info = data_src.GetRasterBand(1)  
     filenames = []
     dates = []
     for i in range (len(Myfiles5)):
-        breakList = Myfiles5[i].split("\\")
+        breakList = Myfiles5[i].split("/")
         fn = breakList [-1]
         fn = fn[:-4]
         filenames.append(fn)
@@ -660,7 +660,7 @@ if step6 == 1:
     filenames = []
     dates = []
     for i in range (len(Myfiles6)):
-        breakList = Myfiles6[i].split("\\")
+        breakList = Myfiles6[i].split("/")
         fn = breakList [-1]
         fn = fn[:-4]
         filenames.append(fn)
@@ -668,8 +668,8 @@ if step6 == 1:
         fn2 = fn2[0]
         dates.append(fn2)    
     for i in range (len(Myfiles6)):
-        in_raster = dir_step5 + "\\" + Myfiles6[i]
-        out_raster = dir_step6 + "\\" + dates[i] + "_MonthlyLAI.asc"
+        in_raster = dir_step5 + "/" + Myfiles6[i]
+        out_raster = dir_step6 + "/" + dates[i] + "_MonthlyLAI.asc"
         
         if os.path.exists(out_raster):
             os.remove(out_raster)
@@ -689,7 +689,7 @@ if step7 == 1:
     dates = []
     
     for i in range (len(Myfiles7)):
-        breakList = Myfiles7[i].split("\\")
+        breakList = Myfiles7[i].split("/")
         fn = breakList [-1]
         fn = fn[:-4]
         filenames.append(fn)
@@ -704,7 +704,7 @@ if step7 == 1:
     
     for j in range (len(Myfiles7)):
         os.chdir(dir_step6)
-        in_raster = dir_step6 + "\\" + Myfiles7[j]
+        in_raster = dir_step6 + "/" + Myfiles7[j]
         get_header = create_header(in_raster)
         nodata = get_header[3]
         raster_n = readMap(Myfiles7[j], get_header[1], get_header[2], get_header[3])
