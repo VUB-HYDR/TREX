@@ -715,7 +715,7 @@ if step7 == 1:
             os.chdir(dir_step7)
             raster_n[nodata_mask == reference_nodata] = nodata                       
             #np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.2f', header=get_header[0], comments='')
-            np.savetxt('int_' + str(Myfiles7[j]) + '.asc', raster_n, fmt='%10.2f', delimiter=',', header=get_header[0], comments='')
+            np.savetxt('int_' + str(Myfiles7[j]) + '.asc', raster_n, fmt='%10.2f', delimiter=' ', header=get_header[0], comments='')
         else:
             print '\nInterpolating ' + str(len(noData_pixels)) + ' values of ' + str(Myfiles7[j])
             os.chdir(dir_step6)
@@ -757,7 +757,7 @@ if step7 == 1:
                 except: raster_n[k] = filler
             os.chdir(dir_step7)
             raster_n[nodata_mask == reference_nodata] = nodata
-            np.savetxt('int_' + str(Myfiles7[j]) + '.asc', raster_n, fmt='%10.2f', delimiter=',', header=get_header[0], comments='')
+            np.savetxt('int_' + str(Myfiles7[j]) + '.asc', raster_n, fmt='%10.2f', delimiter=' ', header=get_header[0], comments='')
 #---------------------------------------------
 
 print '\n PROCESSING COMPLETE'

@@ -11,7 +11,7 @@ import numpy as np
 import numpy.ma as ma
 import matplotlib.pyplot as plt
 
-max_value = 2
+max_value = 5
 
 #-------------------------------------------------------
 # - - - READ SETUP - - - - - - - - - - - - - - - - -
@@ -27,10 +27,10 @@ for i in range(5):
     read_setup.readline()
 # read line #6 reference raster
 reference_raster = read_setup.readline().split()
-dir_input_raster = current_dir + "\\reference_maps\\" + reference_raster[-1]
+dir_input_raster = current_dir + "/reference_maps/" + reference_raster[-1]
 # read line #7 vector map
 vector_map = read_setup.readline().split()
-dir_vector_map = current_dir + "\\reference_maps\\" + vector_map[-1]
+dir_vector_map = current_dir + "/reference_maps/" + vector_map[-1]
 # skip line #8-11
 for i in range(4):
     read_setup.readline()
@@ -70,17 +70,17 @@ step12 = int(step12[-1])
 
 read_setup.close()
 
-dir_step2 = current_dir + "\\main\\1_NDVI_tif"
-dir_step3 = current_dir + "\\main\\2_LAI_tif"
-dir_step4 = current_dir + "\\main\\3_LAI_asc"
-dir_step5 = current_dir + "\\main\\4_monthly_LAI_tif"
-dir_step6 = current_dir + "\\main\\5_monthly_LAI_asc"
-dir_step7 = current_dir + "\\main\\6_inter_LAI_asc"
-dir_step8 = current_dir + "\\main\\7_LAI_jpg"
-dir_step9 = current_dir + "\\main\\8_monthly_LAI_jpg"
-dir_step10 = current_dir + "\\main\\9_interpolated_LAI_jpg"
-dir_step11 = current_dir + "\\main\\10_LAI_timeseries"
-temp = current_dir + "\main\\temp"
+dir_step2 = current_dir + "/main/1_NDVI_tif"
+dir_step3 = current_dir + "/main/2_LAI_tif"
+dir_step4 = current_dir + "/main/3_LAI_asc"
+dir_step5 = current_dir + "/main/4_monthly_LAI_tif"
+dir_step6 = current_dir + "/main/5_monthly_LAI_asc"
+dir_step7 = current_dir + "/main/6_inter_LAI_asc"
+dir_step8 = current_dir + "/main/7_LAI_jpg"
+dir_step9 = current_dir + "/main/8_monthly_LAI_jpg"
+dir_step10 = current_dir + "/main/9_interpolated_LAI_jpg"
+dir_step11 = current_dir + "/main/10_LAI_timeseries"
+temp = current_dir + "/main/temp"
 
 #-------------------------------------------------------
 # - - - FUNCTIONS - - - FUNCTIONS - - - FUNCTIONS - - -
@@ -151,7 +151,7 @@ def extractValues(inputFolder, outputName):
     Cord_py=[]
     
     for i in range (len(Myfiles)):
-        breakList = Myfiles[i].split("\\")
+        breakList = Myfiles[i].split("/")
         fn_01 = breakList [-1].split(".")
         fn = fn_01[0].split("_")[0]
         year = fn[:4]
@@ -212,14 +212,14 @@ if step8 == 1:
     Myfiles8 = SearchFolder(dir_step4, '.asc')   
     filenames = []
     for i in range (len(Myfiles8)):
-        breakList = Myfiles8[i].split("\\")
+        breakList = Myfiles8[i].split("/")
         fn = breakList [-1]
         fn = fn[:-4]
         filenames.append(fn)    
     for j in Myfiles8:
 #        print 'Reading ' + j + '...'
         os.chdir(dir_step4)        
-        file_with_header = dir_step4 + "\\" + j
+        file_with_header = dir_step4 + "/" + j
         get_header = create_header(file_with_header)
         lai_map = readMap(j, get_header[1], get_header[2], get_header[3])
         k = j[:-4]
@@ -233,7 +233,7 @@ if step8 == 1:
         #cmap color (Greens, YlGn, BuGn, summer, winter), interpolation 'none' = pixelated, aspect auto allows streching (equal changes pixels to squares)
 #        ax.plot(x_coord[0] + 0.5, y_coord[0] + 0.5, 'rD', markersize=3)
         plt.imshow(masked, extent=[0, get_header[1], get_header[2], 0],
-                   vmin=0, vmax=max_value, cmap="jet", interpolation="none", aspect='equal' )
+                   vmin=0, vmax=max_value, cmap="YlGn", interpolation="none", aspect='equal' )
         #plt.imshow(masked, vmin=0, vmax=1, cmap="YlGn", interpolation="none", aspect='auto' )
         cbar = plt.colorbar(orientation='horizontal')
         cbar.set_label('LAI [-] 5-day synthesize')
@@ -255,7 +255,7 @@ if step9 == 1:
     Myfiles9 = SearchFolder(dir_step6, '.asc')  
     filenames = []
     for i in range (len(Myfiles9)):
-        breakList = Myfiles9[i].split("\\")
+        breakList = Myfiles9[i].split("/")
         fn = breakList [-1]
         fn = fn[:-4]
         filenames.append(fn)
@@ -264,7 +264,7 @@ if step9 == 1:
 #        print 'Reading ' + j + '...'
         os.chdir(dir_step6)
         
-        file_with_header = dir_step6 + "\\" + j
+        file_with_header = dir_step6 + "/" + j
         get_header = create_header(file_with_header)
         lai_map = readMap(j, get_header[1], get_header[2], get_header[3])
         k = j[:-4]
@@ -274,7 +274,7 @@ if step9 == 1:
         masked = ma.array(plotResult_1, mask = mask_noData)
         plt.clf()
         ay, ax = plt.subplots(figsize=(5, 5)); ax.set_title(k)
-        plt.imshow(masked, vmin=0, vmax=max_value, cmap="jet", interpolation="none", aspect='equal' )
+        plt.imshow(masked, vmin=0, vmax=max_value, cmap="YlGn", interpolation="none", aspect='equal' )
         cbar = plt.colorbar(orientation='horizontal')
         cbar.set_label('LAI [-] monthly agg')
 #        plt.xlabel('Number of columns')
@@ -292,7 +292,7 @@ if step10 == 1:
     Myfiles10 = SearchFolder(dir_step7, '.asc')  
     filenames = []
     for i in range (len(Myfiles10)):
-        breakList = Myfiles10[i].split("\\")
+        breakList = Myfiles10[i].split("/")
         fn = breakList [-1]
         fn = fn[:-4]
         filenames.append(fn)
@@ -301,7 +301,7 @@ if step10 == 1:
 #        print 'Reading ' + j + '...'
         os.chdir(dir_step7)
         
-        file_with_header = dir_step7 + "\\" + j
+        file_with_header = dir_step7 + "/" + j
         get_header = create_header(file_with_header)
         lai_map = readMap(j, get_header[1], get_header[2], get_header[3])
         k = j[:-4]
@@ -313,7 +313,7 @@ if step10 == 1:
         #figcize, pixel size ratio, just for visualization
         ay, ax = plt.subplots(figsize=(5, 5)); ax.set_title(k)
 
-        plt.imshow(masked, vmin=0, vmax=max_value, cmap="jet", interpolation="none", aspect='equal' )
+        plt.imshow(masked, vmin=0, vmax=max_value, cmap="YlGn", interpolation="none", aspect='equal' )
         cbar = plt.colorbar(orientation='horizontal')
         cbar.set_label('LAI [-] monthly agg')
 #        plt.xlabel('Number of columns')
