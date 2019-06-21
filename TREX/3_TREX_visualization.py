@@ -19,7 +19,7 @@ max_value = 5
 current_dir = os.path.dirname(os.path.realpath(__file__))
 os.chdir(current_dir)
 
-setup_name = "LAI_ProbaV_setup.txt"
+setup_name = "TREX_setup.txt"
 read_setup = open(setup_name,'r')
 
 # skip first 5 lines
