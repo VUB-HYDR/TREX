@@ -1,5 +1,5 @@
-#     TREX - Tool for Raster data EXploration
-#                 (20/06/2019)
+#   TREX - Tool for Raster data EXploration
+#   last update by Joanna Suliga(05/07/2019)
 #-------------------------------------------------------
 # - - - MODULES AND WORKING DIRECTORIES - - - - - - - - -
 #-------------------------------------------------------
@@ -19,7 +19,7 @@ os.chdir(current_dir)
 
 setup_name = "TREX_setup.txt"
 read_setup = open(setup_name,'r')
-print read_setup
+print (read_setup)
 
 # skip first 5 lines
 for i in range(5):
@@ -132,7 +132,7 @@ def PixelsQuality(NDVI,SM,output_folder,filename,f_invalid_px):
     band_Array_SM = np.array (band_Array_SM, np.int32)
     
 # Less strict    
-    SM_invalid_pixels = zip(*np.where ((band_Array_SM != 248) & (band_Array_SM != 232) & (band_Array_SM != 120) & (band_Array_SM != 104)))
+    SM_invalid_pixels = list(zip(*np.where ((band_Array_SM != 248) & (band_Array_SM != 232) & (band_Array_SM != 120) & (band_Array_SM != 104))))
 # More strict
 #    SM_invalid_pixels = zip(*np.where (band_Array_SM != 248))
     counter = 0
@@ -191,7 +191,7 @@ def NDVI_correction(input_path,output_folder,filename):
     geoTrans = data_src.GetGeoTransform()
     wktProjection = data_src.GetProjection() 
     band_Array = gdal.Band.ReadAsArray(band_info)
-    band_Array_NDVI_less_than_0_Values= zip(*np.where ((band_Array < 0)&(band_Array != nodata)))
+    band_Array_NDVI_less_than_0_Values = list(zip(*np.where ((band_Array < 0)&(band_Array != nodata))))
     for i in band_Array_NDVI_less_than_0_Values:
         band_Array[i]=0
 #        band_Array[i]=nodata
@@ -216,19 +216,21 @@ def GetCellSize(path):
     del data_src
 
 def GetExtent(path):
-# Returns the extent (xll, yll, xlr, yul) and number of columns and rows 
-# (ncols, nrows) of the certain raster (%path). 
-# l/u is lower/upper and l/r is a left/right corner   
+# GDAL GetGeoTransform() returns ulx [0], uly [3] (upper left px)
+# and pixel width [1] and height [5]
+# This function returns ulx [0], uly[1], lrx[2], lry[3] (upper left px & lower right px)
+# and number of cols[4] and rows[5]
+# so it matching GDAL_translate [-a_ullr ulx uly lrx lry]  
     data_src = gdal.Open(path)
     data_geo = data_src.GetGeoTransform()
-    xll = data_geo[0]
-    yul = data_geo[3]
+    ulx = data_geo[0]
+    uly = data_geo[3]
     data_src = data_src.GetRasterBand(1)
     ncols = data_src.XSize
     nrows = data_src.YSize
-    xlr = xll + data_geo[1]*ncols
-    yll = yul - data_geo[1]*nrows
-    return xll, yll, xlr, yul, ncols, nrows
+    lrx = ulx + data_geo[1]*ncols
+    lry = uly - data_geo[1]*nrows
+    return ulx, uly, lrx, lry, ncols, nrows
     del data_src
     
 def LAI_Map_Tiff(image_input,output_folder,filename):
@@ -249,15 +251,11 @@ def LAI_Map_Tiff(image_input,output_folder,filename):
     np.seterr(divide='ignore', invalid='ignore')    
     #LAI Formula designed by Su
     LAI_map = np.sqrt(ndvi_map * (1+ndvi_map) / (1-ndvi_map))   
-    
     save_LAI_map_Nodata=np.where(ndvi_map == nodata, nodata, LAI_map)
     border = gdal.Open(dir_input_raster)
     band_info = border.GetRasterBand(1)
     border_raster = gdal.Band.ReadAsArray(band_info)
     LAI_maps = np.where(border_raster == nodata, nodata, np.array(save_LAI_map_Nodata))
-
-    
-    
     os.chdir (output_folder)
     new_filename = filename + "_LAI.tif" 
     driver = gdal.GetDriverByName('GTiff')
@@ -380,7 +378,7 @@ def create_header(from_asc):
 def set_nodata(array2d, oldValue, newValue):
 # Replaces old nodata values (%oldValue) with new values (%newValue) of a certain
 # 2d numpy array (%array2d)
-    noData_pixels = zip(*np.where(array2d == oldValue))
+    noData_pixels = list(zip(*np.where(array2d == oldValue)))
     for i in noData_pixels: array2d[i] = newValue
     return array2d
 
@@ -396,8 +394,7 @@ def set_nodata(array2d, oldValue, newValue):
 # Highly recommended after changing dataset (new maps etc.)
             
 if step1 == 1:
-#    print '\n STEP 1'
-    print '\nDeleting old content...'           
+    print ('\nDeleting old content...')           
     rerun = [dir_step2, dir_step3, dir_step4, dir_step5, dir_step6, dir_step7, temp]
     for i in range(len(rerun)):
         files = os.listdir(rerun[i])
@@ -411,9 +408,7 @@ else:
 #---------------------------------------------
 # STEP 2: Main processing. 
 if step2 == 1:    
-#    print '\n STEP 2'
-#    print 'Checking radiometric and state quality. Discarding images with ' +  str(f_invalid_px_1*100) + '% or more invalid pixels...'
-    print '\nChecking radiometric quality...'
+    print ('\nChecking radiometric quality...')
     NDVI_list = []
     NDVI_list = SearchFolder(dir_input_maps, 'NDVI.tif')
     SM_list = []
@@ -429,7 +424,7 @@ if step2 == 1:
         Cloud_Free_Image = PixelsQuality(NDVI_list[i],SM_list[i],temp, fNames[i], f_invalid_px_1)   
     CopyClearTemp(temp, '.tif', dir_step2)       
 #---------------------------------------------
-    print '\nConversion from digital values to physical values...'
+    print ('\nConversion from digital values to physical values...')
     Myfiles22= SearchFolder(dir_step2, 'NDVI.tif')    
 # After discarding !!!   
     filenames = []
@@ -447,7 +442,6 @@ if step2 == 1:
     CopyClearTemp(temp, '.tif', dir_step2)
 #---------------------------------------------
 #    print '\nCorection for negative values... 
-#[VALIDATE WATER PIXELS!!!!]'
     Myfiles23=SearchFolder(dir_step2, 'NDVI.tif')  
     for i in range (len(Myfiles23)):
         os.chdir (dir_step2)
@@ -468,7 +462,7 @@ if step2 == 1:
         os.system (cmd)        
     CopyClearTemp(temp, '.tif', dir_step2)   
 #---------------------------------------------
-    print '\nReprojecting and resampling NDVI maps ...'    
+    print ('\nReprojecting and resampling NDVI maps ...')    
     Myfiles25=SearchFolder(dir_step2, '.tif')
     
     data_rast = gdal.Open(dir_input_raster)
@@ -487,10 +481,9 @@ if step2 == 1:
         cmd= 'gdalwarp -q -multi -of GTiff -co TILED=YES -s_srs %s -t_srs %s -tr %s %s -r cubic -overwrite %s %s' % (project_5, t_project, newt_xres, newt_yres, in_raster, out_raster)
         os.system (cmd)    
     del data_rast
-#    del raster_5
     CopyClearTemp(temp, '.tif', dir_step2)       
 #---------------------------------------------
-    print '\nAdjusting extend...'
+    print ('\nComputing the shift...')
     Myfiles26=SearchFolder(dir_step2, '.tif')
     for i in range (len(Myfiles26)):
         os.chdir (dir_step2)
@@ -503,34 +496,37 @@ if step2 == 1:
     #finding the extent of ProbaV maps and raster
         Inp_CellSize = GetCellSize(in_raster)
         cellsize = Inp_CellSize[0]
-        Inp_Extent = GetExtent(in_raster)
-        xll_inp = Inp_Extent[0]
-        yll_inp = Inp_Extent[1]
-        Ext_Extent = GetExtent(dir_input_raster)
-        xll_ext = Ext_Extent[0]
-        yll_ext = Ext_Extent[1]
-    #computing the shift in x (assuming that both rasters have the same cellsize!)
-        x_shift = (xll_ext - xll_inp)/cellsize
+        MapExtent = GetExtent(in_raster)
+        ulx_map = MapExtent[0]
+        uly_map = MapExtent[1]
+        RefExtent = GetExtent(dir_input_raster)
+        ulx_ref = RefExtent[0]
+        uly_ref = RefExtent[1]
+    #compute the X shift between Proba-V map and reference
+        x_shift = (ulx_map - ulx_ref)/cellsize
         x_shift = x_shift - (round(x_shift) - 1)
         x_shift = cellsize-(cellsize*x_shift)    
-    #computing the shift in y (assuming that both rasters have the same cellsize!)
-        y_shift = (yll_ext - yll_inp)/cellsize
+    #compute the Y shift between Proba-V map and reference
+        y_shift = (uly_map - uly_ref)/cellsize
         y_shift = y_shift - (round(y_shift) - 1)
         y_shift = cellsize-(cellsize*y_shift)    
     #apllying shift to the map extent
-        new_xll = xll_inp - x_shift
-        new_yll = yll_inp - y_shift
-        max_xll = Inp_Extent[2] - x_shift
-        max_yll = Inp_Extent[3] - y_shift
-        cmd= 'gdal_translate -q -a_ullr %s %s %s %s -stats %s %s' % (new_xll,max_yll,max_xll,new_yll, in_raster, out_raster)
+        new_ulx = ulx_map - x_shift
+        new_uly = uly_map - y_shift
+        new_lrx = MapExtent[2] - x_shift
+        new_lry = MapExtent[3] - y_shift
+        # new_ulx = xll_inp - x_shift
+        # new_uly = yll_inp - y_shift
+        # new_lrx = Inp_Extent[2] - x_shift
+        # nex_lry = Inp_Extent[3] - y_shift
+        cmd= 'gdal_translate -q -a_ullr %s %s %s %s -stats %s %s' % (new_ulx, new_uly, new_lrx, new_lry, in_raster, out_raster)
         os.system (cmd)         
-    print 'x shift: ' + str(x_shift) + ' [m]'
-    print 'y shift: ' + str(y_shift) + ' [m]'    
+    print ('x shift: ' + str(x_shift) + ' [m]')
+    print ('y shift: ' + str(y_shift) + ' [m]')    
     del raster_6
-#    raster_6.close()
     CopyClearTemp(temp, '.tif', dir_step2)
 #---------------------------------------------
-    print '\nClipping and generating NDVI.tif maps...'
+    print ('\nClipping and generating NDVI.tif maps...')
     Myfiles27=SearchFolder(dir_step2, '.tif')
     #gdaltindex clipper.shp clipshapeRaster.tif
     cutline = temp + "/cutline.shp"
@@ -545,7 +541,6 @@ if step2 == 1:
         cmd= 'gdalwarp -q -multi -of GTiff -co TILED=YES -cutline %s -crop_to_cutline %s %s' % (cutline, in_raster, out_raster)
         os.system (cmd)   
     del raster_7
-#    raster_7.close()
     CopyClearTemp(temp, '.tif', dir_step2)    
 else:
     pass
@@ -553,7 +548,7 @@ else:
 # - - - STEP 3 - - - STEP 3 - - - STEP 3 - - -
 #--------------------------------------------- 
 if step3 == 1:
-    print '\nGenerating LAI.tif maps...'    
+    print ('\nGenerating LAI.tif maps...')    
     Myfiles3=SearchFolder(dir_step2, '.tif')
     dates = []
     for i in range (len(Myfiles3)):
@@ -578,7 +573,7 @@ else:
 # - - - STEP 4 - - - STEP 4 - - - STEP 4 - - -
 #--------------------------------------------- 
 if step4 == 1:
-    print '\nGenerating LAI.asc maps...'
+    print ('\nGenerating LAI.asc maps...')
     Myfiles4=SearchFolder(dir_step3, '.tif')
     os.chdir(dir_step4)
     dates = []
@@ -603,7 +598,7 @@ else:
 #--------------------------------------------- 
 if step5 == 1:
 #    print '\n Step 5'
-    print '\nGenerating monthly aggregated LAI.tif maps... '
+    print ('\nGenerating monthly aggregated LAI.tif maps... ')
     Myfiles5=SearchFolder(dir_step3, '.tif')  
     data_src = gdal.Open(dir_step3 + "/" + Myfiles5[0])
     band_info = data_src.GetRasterBand(1)  
@@ -628,7 +623,7 @@ if step5 == 1:
     in_raster = dir_step3
     out_raster = dir_step5    
     
-    print '\nStatus report - number of available products for each month'
+    print ('\nStatus report - number of available products for each month')
     os.chdir(dir_step5)
     report = open('report.txt','w')
     for i in range(len(years)):
@@ -639,14 +634,14 @@ if step5 == 1:
             add_list = LAI_Map_Agg(in_raster, out_raster, filenames, months[k], years[i])
             try: 
                 if len(add_list) != 0:
-                    print add_list
+                    print (add_list)
                     report.write('\n ' + str(name_of_months[k]) + ':')
                     for a in add_list:
                         b = ' ' + str(a)
                         report.write(b)
             except: pass
     report.write('\n ===================================================== ')
-    print '\nReport saved as report.txt in the file 4_monthly_LAI_tif'
+    print ('\nReport saved as report.txt in the file 4_monthly_LAI_tif')
     report.close()
 else:
     pass
@@ -655,7 +650,7 @@ else:
 #--------------------------------------------- 
 if step6 == 1:
 #    print '\n Step 6'
-    print '\nGenerating aggregated LAI.asc maps...'
+    print ('\nGenerating aggregated LAI.asc maps...')
     Myfiles6=SearchFolder(dir_step5, '.tif')    
     filenames = []
     dates = []
@@ -682,7 +677,7 @@ else:
 #--------------------------------------------- 
 if step7 == 1:   
 #    print '\n Step 7'
-    print '\nInterpolating between monthly LAI.asc maps...'
+    print ('\nInterpolating between monthly LAI.asc maps...')
 
     Myfiles7=SearchFolder(dir_step6, '.asc')    
     filenames = []
@@ -710,14 +705,14 @@ if step7 == 1:
         raster_n = readMap(Myfiles7[j], get_header[1], get_header[2], get_header[3])
         raster_n[nodata_mask == reference_nodata] = np.nan
         #check if raster_n has nodata
-        noData_pixels = zip(*np.where(raster_n == nodata))       
+        noData_pixels = list(zip(*np.where(raster_n == nodata)))   
         if len(noData_pixels) == 0:
             os.chdir(dir_step7)
             raster_n[nodata_mask == reference_nodata] = nodata                       
             #np.savetxt('int_LAI_' + dates[j] + '.asc', raster_n, fmt='%10.2f', header=get_header[0], comments='')
             np.savetxt('int_' + str(Myfiles7[j]) + '.asc', raster_n, fmt='%10.2f', delimiter=' ', header=get_header[0], comments='')
         else:
-            print '\nInterpolating ' + str(len(noData_pixels)) + ' values of ' + str(Myfiles7[j])
+            print ('\nInterpolating ' + str(len(noData_pixels)) + ' values of ' + str(Myfiles7[j]))
             os.chdir(dir_step6)
             raster_n_minus1 = readMap(Myfiles7[j-1], get_header[1], get_header[2], get_header[3])
             raster_n_minus2 = readMap(Myfiles7[j-2], get_header[1], get_header[2], get_header[3])
@@ -760,4 +755,4 @@ if step7 == 1:
             np.savetxt('int_' + str(Myfiles7[j]) + '.asc', raster_n, fmt='%10.2f', delimiter=' ', header=get_header[0], comments='')
 #---------------------------------------------
 
-print '\n PROCESSING COMPLETE'
+print ('\n PROCESSING COMPLETE')

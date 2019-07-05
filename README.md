@@ -12,7 +12,7 @@ Tool for Raster data EXploration has various application, however the main objec
 * for any projection system...
 * or any spatial resolution
 
-Pixels of ProbaV images after reprojecting from orginal degree units into metric system are reshaped into rectangulars, thus hindering their use for multispatial analysis. Through the improved utilization of GDAL software and programming in Python 2.7, this tool can, based on initial user input, automatically check radiometric quality, select cloudless images, reproject, resample, clip and adjust NDVI products of 100m ProbaV images. After specifying the reference raster or shapefile this tool can produce:
+Pixels of ProbaV images after reprojecting from orginal degree units into metric system are reshaped into rectangulars, thus hindering their use for multispatial analysis. Through the improved utilization of GDAL software and programming in Python 2.7 (or 3.x), this tool can, based on initial user input, automatically check radiometric quality, select cloudless images, reproject, resample, clip and adjust NDVI products of 100m ProbaV images. After specifying the reference raster or shapefile this tool can produce:
 * NDVI raster maps at .tif format for each input image
 * monhtly NDVI raster maps at .tif or .asc format
 * LAI raster maps at .tif or .asc format for each input image
@@ -42,7 +42,7 @@ More recent versions of listed packages should be still compatible.
 
 # 3. Tool's structure
 ---
-Tool's folder has a fixed structure that has to be respected and never modified, unless those changes are fully intended. Tool consists of three scripts written in Python 2.7, setup text file, folder with temporal data and folders containing input or output data. Scripts do not interact with each other but saves and reads data from different folders. User through "LAI_ProbaV_setup.txt" file can specify which of type input or output scripts will read and process. Each script should be run seperetely using [SPYDER](https://pythonhosted.org/spyder/) Python environment. 
+Tool's folder has a fixed structure that has to be respected and never modified, unless those changes are fully intended. Tool consists of three scripts written in Python, setup text file, folder with temporal data and folders containing input or output data. Scripts do not interact with each other but saves and reads data from different folders. User through "LAI_ProbaV_setup.txt" file can specify which of type input or output scripts will read and process. Each script should be run seperetely using [SPYDER](https://pythonhosted.org/spyder/) Python environment. 
 ![ Graph.1 Structure ](./graphs/structure.JPG)
 ### Input data
 There are three types of input data for the tool:
