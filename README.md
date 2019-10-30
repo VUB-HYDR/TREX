@@ -4,6 +4,9 @@
 Authors: Joanna Suliga, Joy Bhattacharjee, Boud Verbeiren
 Contact author: Joanna Suliga, joanna.suliga@vub.be
 
+Publication related to the TREX tool: 
+*Suliga et al. (2019), Automatic Proba-V Processor: TREX—Tool for Raster Data Exploration* (download .pdf [HERE](https://www.mdpi.com/2072-4292/11/21/2538))
+
 # 1. Introduction
 ---
 Tool for Raster data EXploration has various application, however the main objective is to automatically process ProbaV sattelite images into timeseries of Leaf Area Index and challenge the negative impact of cloud coverege on optical sattelite data. As long as satelite can provide images for selected study area, this tool is flexible enough to process data:
@@ -48,32 +51,32 @@ Tool's folder has a fixed structure that has to be respected and never modified,
 There are three types of input data for the tool:
 * **Reference raster**
 
-This map is a raster .tif that represents the area of interest e.g. a catchment shape. All outputs will be reprojected, resampled and clipped to the exact extend of that raster. The reference raster must have set a projection and no data. This raster should have a name specified in setup file (*LAI_ProbaV_setup.txt*) and be located in the folder *reference_maps*.
+This map is a raster .tif that represents the area of interest e.g. a catchment shape. All outputs will be reprojected, resampled and clipped to the exact extend of that raster. The reference raster must have set a projection and no data. This raster should have a name specified in setup file (*TREX_setup.txt*) and be located in the folder *reference_maps*.
 * **Extraction points**
 
-This map is a shapefile .shp that containts points of interest. Coordinates of those points will be used for deriving timeseries of LAI. This raster should have a name specified in the setup file ( *LAI_ProbaV_setup.txt*); be located in the folder *reference_maps* and has the same projection as the reference raster.
+This map is a shapefile .shp that containts points of interest. Coordinates of those points will be used for deriving timeseries of LAI. This raster should have a name specified in the setup file ( TREX_setup.txt*); be located in the folder *reference_maps* and has the same projection as the reference raster.
 * **ProbaV maps**
 
-ProbaV is a small satellite launched by ESA and managed by VITO that provides almost daily NDVI maps at 100m, 300m and 1km spatial resolution. ProbaV images can be requested (for free) through [VITO Earth Observation portal](https://www.vito-eodata.be/PDF/portal/Application.html#Home). Order should *always* contain two types of images: NDVI maps and SM (status maps) at .tif format delivered using ftp server. Downloading images from the ftp server is handled by the first script *1_LAI_ProbaV_download.py*.
+ProbaV is a small satellite launched by ESA and managed by VITO that provides almost daily NDVI maps at 100m, 300m and 1km spatial resolution. ProbaV images can be requested (for free) through [VITO Earth Observation portal](https://www.vito-eodata.be/PDF/portal/Application.html#Home). Order should *always* contain two types of images: NDVI maps and SM (status maps) at .tif format delivered using ftp server. Downloading images from the ftp server is handled by the first script *1_TREX_download.py*.
 
 ### Scripts
 They are three main scripts:
-* **1_LAI_ProbaV_download.py**
+* **1_TREX_download.py**
 
 First script is used for downloading satellite images from ftp server provided by VITO. Adress to this online repository is individually granted and send by email after user succesful ordering satelite data from the [VITO Earth Observation portal](https://www.vito-eodata.be/PDF/portal/Application.html#Home). After providing login, password and name of the repository (directly into Spyder console), the script will download and save all data in the folder ProbaV_download.
-* **2_LAI_ProbaV_processing.py**
+* **2_TREX_processing.py**
 
 Second srcipt calls GDAL functions for processing raster data into format specified by user in *LAI_ProbaV_setup.txt*. Results of this script are called primary outputs and are further explained in chapter 4. Processing script checks radiometric quality of images, discards clouded images (threshold to be set in *LAI_ProbaV_setup.txt*), convert to physical values, reproject,  resample, clipp and adjust extend to match reference raster. This script produces maps at .tif or .asc format suitable for ArcGIS or QGIS. Primary outputs are stored inside *main* folder in subfolders numbered from 1 to 6.
  
-* **3_LAI_ProbaV_visualization.py**. 
+* **3_TREX_visualization.py**. 
 
 Third script is focused on producing secondary outputs (more in chapter 4) timeseries or color representation of processed maps. It automatically produces graphs with the same axis or color scale and stores inside *main* folder in subfolders numbered from 7 to 9.
 
-# 4. ProbaV setup file
+# 4. TREX setup file
 ---
 
 ### Setup overview
-*LAI_ProbaV_setup.txt* is a key file to control all inputs and outputs generated by scripts. They are 14 main variables grouped into 3 categories: input data, primary outputs (from 2_LAI_ProbaV_processing.py) and secondary outputs (from 3_LAI_ProbaV_visualization.py). 
+*LAI_ProbaV_setup.txt* is a key file to control all inputs and outputs generated by scripts. They are 14 main variables grouped into 3 categories: input data, primary outputs (from 2_TREX_processing.py) and secondary outputs (from 3_TREX_visualization.py). 
 Each variable got a seperate number to help with quick identification.
 
 = = = INPUT DATA = = = = = = = = = = = = = = = =
@@ -85,7 +88,7 @@ Each variable got a seperate number to help with quick identification.
 [3] |Cloud fraction    |0.5
 [4] |Wipe out memory   |1
 
-= = = PRIMARY OUTPUT (from 2_LAI_ProbaV_processing.py) = = =
+= = = PRIMARY OUTPUT (from 2_TREX_processing.py) = = =
 
    #| name             | value (defined by user)
 ----|------------------|---------
@@ -96,7 +99,7 @@ Each variable got a seperate number to help with quick identification.
 [9] |Monthly LAI.asc maps|1
 [10]|WETSPA format    |1
 
-= = = SECONDARY OUTPUT (from 3_LAI_ProbaV_visualization.py) = = =
+= = = SECONDARY OUTPUT (from 3_TREX_visualization.py) = = =
 
    #| name             | value (defined by user)
 ----|------------------|---------
